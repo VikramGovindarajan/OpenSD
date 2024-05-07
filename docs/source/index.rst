@@ -10,6 +10,7 @@ Welcome to OpenSD's documentation!
    :maxdepth: 2
    :caption: Contents:
 
+   Tutorials/index
 
 
 Indices and tables

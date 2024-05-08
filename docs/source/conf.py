@@ -14,11 +14,19 @@ release = '0.1.0'
 # -- General configuration ---------------------------------------------------
 # https://www.sphinx-doc.org/en/master/usage/configuration.html#general-configuration
 
-extensions = []
+extensions = [
+    'sphinx.ext.mathjax',
+    'nbsphinx', 
+    'sphinx.ext.autodoc',
+]
+
+nbsphinx_execute = 'never'
+nbsphinx_allow_errors = True
+
+source_suffix = ['.rst', '.md']
 
 templates_path = ['_templates']
-exclude_patterns = []
-
+exclude_patterns = ['_build', '**.ipynb_checkpoints']
 
 
 # -- Options for HTML output -------------------------------------------------

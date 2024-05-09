@@ -1,0 +1,1 @@
+from opensd.settings import *

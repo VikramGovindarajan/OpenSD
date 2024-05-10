@@ -1,7 +1,16 @@
+from enum import Enum
 import numpy as np
 from pathlib import Path
 import lxml.etree as ET
 from opensd.checkvalue import PathLike
+from ._xml import clean_indentation, reorder_attributes
+
+class RunMode(Enum):
+    STEADY = 'steady'
+    DESIGN = 'design'
+    SENSITIVITY = 'sensitivity'
+    OPTIMIZE = 'optimize'
+    TRANSIENT_RESTART = 'transient restart'
 
 class Settings:
     """Settings used for an OpenSD simulation.
@@ -17,10 +26,13 @@ class Settings:
         Time step size.
     etime : float
         Simulation end time.
+    run_mode : {'steady', 'design', 'sensitivity', 'optimize', 'transient restart'}
+        The type of calculation to perform (default is 'steady')
     """
 
     def __init__(self, **kwargs):
         
+        self._run_mode = RunMode.STEADY
         self._tim_slot = np.array([0.])
         # if hasattr(scheduler,"tim_slot"):
             # tim_slot = scheduler.tim_slot
@@ -61,5 +73,19 @@ class Settings:
         """
         # Reset xml element tree
         element = ET.Element("settings")
+        self._create_run_mode_subelement(element)
+        self._create_tim_slot_subelement(element)
 
+        # Clean the indentation in the file to be user-readable
+        clean_indentation(element)
+        reorder_attributes(element)
+        
         return element
+
+    def _create_run_mode_subelement(self, root):
+        elem = ET.SubElement(root, "run_mode")
+        elem.text = self._run_mode.value
+
+    def _create_tim_slot_subelement(self, root):
+        elem = ET.SubElement(root, "tim_slot")
+        elem.text = np.array_str(self._tim_slot)

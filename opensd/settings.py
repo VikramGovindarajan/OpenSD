@@ -22,10 +22,8 @@ class Settings:
 
     Attributes
     ----------
-    delt : float
-        Time step size.
-    etime : float
-        Simulation end time.
+    tim_slot : np.array()
+        Time slot.
     run_mode : {'steady', 'design', 'sensitivity', 'optimize', 'transient restart'}
         The type of calculation to perform (default is 'steady')
     """
@@ -63,13 +61,9 @@ class Settings:
         tree.write(str(p), xml_declaration=True, encoding='utf-8')
 
 
-    def to_xml_element(self, mesh_memo=None):
+    def to_xml_element(self):
         """Create a 'settings' element to be written to an XML file.
 
-        Parameters
-        ----------
-        mesh_memo : set of ints
-            A set of mesh IDs to keep track of whether a mesh has already been written.
         """
         # Reset xml element tree
         element = ET.Element("settings")

@@ -5,6 +5,7 @@
 
 Welcome to OpenSD's documentation!
 ==================================
+OpenSD is system dynamics code. It is developed with a similar outline structure of other popular open-source software projects in the domain.
 
 .. toctree::
    :maxdepth: 2

@@ -73,10 +73,11 @@ class Circuit:
         return element
 
 class Model(CheckedList):
-    """Collection of Model used for an OpenSD simulation.
+    """Model representing a collection of circuits and heat slabs.
 
     This class corresponds directly to the model.xml input file. It can be
-    thought of as a normal Python list where each member is a :class:`Circuit`.
+    thought of as a normal Python list where each member is a :class:`Circuit`
+    or :class:`HeatSlab`.
     It behaves like a list as the following example demonstrates:
 
     >>> circuit1 = openmc.Circuit()
@@ -89,18 +90,18 @@ class Model(CheckedList):
     Parameters
     ----------
     model : Iterable of openmc.Circuit, openmc.HeatSlab
-        Models to add to the collection
+        Items (circuits or heatslabs) to add to the collection
 
     """
 
-    def __init__(self, circuits=None):
+    def __init__(self, items=None):
         super().__init__(Circuit, 'circuits collection')
 
-        if circuits is not None:
-            self += circuits
+        if items is not None:
+            self += items
 
     def export_to_xml(self, path: PathLike = 'model.xml'):
-        """Export circuit to an XML file.
+        """Export model to an XML file.
 
         Parameters
         ----------
@@ -142,9 +143,9 @@ class Model(CheckedList):
             file.write("<?xml version='1.0' encoding='utf-8'?>\n")
         file.write(indentation+'<model>\n')
 
-        # Write the <circuit> elements.
-        for circuit in sorted(self, key=lambda x: x.identifier):
-            element = circuit.to_xml_element()
+        # Write the <circuit> or <hslab> elements.
+        for item in sorted(self, key=lambda x: x.identifier):
+            element = item.to_xml_element()
             clean_indentation(element, level=level+1)
             element.tail = element.tail.strip(' ')
             file.write((level+1)*spaces_per_level*' ')

@@ -1,8 +1,8 @@
-import numpy as np
 from pathlib import Path
 import lxml.etree as ET
 from ._xml import clean_indentation, reorder_attributes
 from opensd.checkvalue import PathLike, CheckedList
+from opensd.circuit import Circuit
 
 class Model(CheckedList):
     """Model representing a collection of circuits and heat slabs.

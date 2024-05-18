@@ -1,3 +1,4 @@
+import lxml.etree as ET
 
 class Circuit:
     """Flow circuit representing a collection of nodes, pipes, and other flow elements.

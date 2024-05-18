@@ -67,3 +67,22 @@ class Circuit:
             raise ValueError(f'Fluid has not been assigned for circuit {self.identifier}!')
 
         return element
+
+    def add_pipe(self,identifier,diameter,length,unode,dnode,fricopt,roughness,ncell,heat_input=0.,cfarea=None,npar=1,qcrit=None,Kforward=0.,flowreg="Homogeneous",ufrac=None,dfrac=None):
+        # unode = get_comp(unode)
+        # dnode = get_comp(dnode)
+        # if isinstance(unode,Reservoir) and ufrac is None:
+            # sys.exit("pipe " + identifier + " connected to tptank. please specify upstream connection fraction. stopping")
+        # if isinstance(dnode,Reservoir) and dfrac is None:
+            # sys.exit("pipe " + identifier + " connected to tptank. please specify downstream connection fraction. stopping")
+        # if flowreg == "Homogeneous":
+        from opensd.pipe import Pipe
+        pipe = Pipe(identifier,self,diameter,length,unode,ufrac,dnode,dfrac,fricopt,roughness,ncell,heat_input,cfarea,npar,qcrit,Kforward,flowreg)
+        # elif flowreg == "Slug":
+            # from PINET import slug_pipe
+            # pipe = slug_pipe.SlugPipe(identifier,self,diameter,length,unode,dnode,fricopt,roughness,ncell,heat_input,cfarea,npar,qcrit,Kforward,flowreg)
+        # else:
+            # print ("flowreg not found.stopping",flowreg)
+            # sys.exit()
+        self.pipes.append(pipe)
+        return pipe

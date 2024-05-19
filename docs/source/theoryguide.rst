@@ -1,0 +1,6 @@
+.. _theoryguide:
+
+============
+Theory Guide
+============
+

@@ -4,6 +4,9 @@
 //! \file settings.h
 //! \brief Settings for OpenSD
 
+#include <string>
+
+#include "pugixml.hpp"
 
 namespace opensd {
 
@@ -13,6 +16,7 @@ namespace opensd {
 
 namespace settings {
 
+extern std::string path_input;  //!< directory where main .xml files resides
 // extern RunMode run_mode;       //!< Run mode (eigenvalue, fixed src, etc.)
 // extern SolverType solver_type; //!< Solver Type (Monte Carlo or Random Ray)
 

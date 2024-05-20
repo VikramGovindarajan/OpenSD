@@ -1,21 +1,18 @@
 #include <iostream>
 #include "CoolProp.h"
+#include "opensd/capi.h"
+#include "opensd/constants.h"
 
-namespace openmc {
-    
-void read_separate_xml_files()
+int main(int argc, char* argv[])
 {
-  // read_settings_xml();
-  // read_geometry_xml();
+  
+  using namespace opensd;
+  int err;
 
-}
+  err = opensd_init(argc, argv);
 
-} // namespace openmc
+  std::cout << CoolProp::PropsSI("T","P",101325,"Q",0,"Water") << std::endl;
 
-int main()
-{
-    using namespace openmc;
-    std::cout << CoolProp::PropsSI("T","P",101325,"Q",0,"Water") << std::endl;
-    read_separate_xml_files();
-	return 1;
+  return 1;
+  
 }

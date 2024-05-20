@@ -33,3 +33,26 @@ class Node(object):
         self.mresidue = 0.
         self.volume = volume
         self.pc_flag = False
+
+class Reservoir(Node):
+    def __init__(self,identifier,circuit,volume,heat_input,elevation,tpres_old,ttemp_old,tenth_old,geom):
+        super().__init__(identifier,circuit,volume,heat_input,elevation,tpres_old,ttemp_old,tenth_old,geom)
+
+        self.watermass = 0.
+        if geom[0] == "vertcyl" or geom[0] == "horicyl":
+            if geom[0] == "vertcyl":
+                self.height = geom[2]
+            elif geom[0] == "horicyl":
+                self.height = geom[1]
+        else:
+            sys.exit("geometry not found. stopping")
+        self.level = self.level_old = 0.
+        self.geom = geom
+
+class TPTank(Reservoir):
+    def __init__(self,identifier,circuit,volume,heat_input,elevation,tpres_old,ttemp_old,tenth_old,geom):
+        super().__init__(identifier,circuit,volume,heat_input,elevation,tpres_old,ttemp_old,tenth_old,geom)
+        if geom[0] == "vertcyl" or geom[0] == "horicyl":
+            self.tpvolume = math.pi*geom[1]**2/4.*geom[2]
+            self.volume = self.tpvolume
+

@@ -4,10 +4,10 @@ from ._xml import clean_indentation, reorder_attributes
 from opensd.checkvalue import PathLike, CheckedList
 from opensd.circuit import Circuit
 
-class Model(CheckedList):
-    """Model representing a collection of circuits and heat slabs.
+class Geometry(CheckedList):
+    """Geometry representing a collection of circuits and heat slabs.
 
-    This class corresponds directly to the model.xml input file. It can be
+    This class corresponds directly to the geometry.xml input file. It can be
     thought of as a normal Python list where each member is a :class:`Circuit`
     or :class:`HeatSlab`.
     It behaves like a list as the following example demonstrates:
@@ -15,13 +15,13 @@ class Model(CheckedList):
     >>> circuit1 = openmc.Circuit()
     >>> circuit2 = openmc.Circuit()
     >>> heatslab1 = openmc.HeatSlab()
-    >>> m = openmc.Model([circuit1])
+    >>> m = openmc.Geometry([circuit1])
     >>> m.append(circuit2)
     >>> m += [heatslab1]
 
     Parameters
     ----------
-    model : Iterable of openmc.Circuit, openmc.HeatSlab
+    geometry : Iterable of openmc.Circuit, openmc.HeatSlab
         Items (circuits or heatslabs) to add to the collection
 
     """
@@ -32,20 +32,20 @@ class Model(CheckedList):
         if items is not None:
             self += items
 
-    def export_to_xml(self, path: PathLike = 'model.xml'):
-        """Export model to an XML file.
+    def export_to_xml(self, path: PathLike = 'geometry.xml'):
+        """Export geometry to an XML file.
 
         Parameters
         ----------
         path : str
-            Path to file to write. Defaults to 'model.xml'.
+            Path to file to write. Defaults to 'geometry.xml'.
 
         """
 
         # Check if path is a directory
         p = Path(path)
         if p.is_dir():
-            p /= 'model.xml'
+            p /= 'geometry.xml'
 
         with open(str(p), 'w', encoding='utf-8',
                   errors='xmlcharrefreplace') as fh:
@@ -53,7 +53,7 @@ class Model(CheckedList):
 
     def _write_xml(self, file, header=True, level=0, spaces_per_level=2,
                    trailing_indent=True):
-        """Writes XML content of the model to an open file handle.
+        """Writes XML content of the geometry to an open file handle.
 
         Parameters
         ----------
@@ -62,18 +62,18 @@ class Model(CheckedList):
         header : bool
             Whether or not to write the XML header
         level : int
-            Indentation level of model element
+            Indentation level of geometry element
         spaces_per_level : int
             Number of spaces per indentation
         trailing_indentation : bool
-            Whether or not to write a trailing indentation for the model element
+            Whether or not to write a trailing indentation for the geometry element
 
         """
         indentation = level*spaces_per_level*' '
         # Write the header and the opening tag for the root element.
         if header:
             file.write("<?xml version='1.0' encoding='utf-8'?>\n")
-        file.write(indentation+'<model>\n')
+        file.write(indentation+'<geometry>\n')
 
         # Write the <circuit> or <hslab> elements.
         for item in sorted(self, key=lambda x: x.identifier):
@@ -85,7 +85,7 @@ class Model(CheckedList):
             file.write(ET.tostring(element, encoding="unicode"))
 
         # Write the closing tag for the root element.
-        file.write(indentation+'</model>\n')
+        file.write(indentation+'</geometry>\n')
 
         # Write a trailing indentation for the next element
         # at this level if needed

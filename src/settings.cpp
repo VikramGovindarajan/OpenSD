@@ -3,6 +3,7 @@
 #include <string>
 
 #include "opensd/error.h"
+#include "opensd/xml_interface.h"
 
 namespace opensd {
     
@@ -13,6 +14,8 @@ namespace opensd {
 namespace settings {
 
   std::string path_input;
+  RunMode run_mode {RunMode::UNSET};
+  int verbosity {7};
 
 } // namespace settings
 
@@ -47,9 +50,47 @@ void read_settings_xml()
     fatal_error("Error processing settings.xml file.");
   }
 
+  // Get root element
+  xml_node root = doc.document_element();
+
+  // Verbosity
+  if (check_for_node(root, "verbosity")) {
+    verbosity = std::stoi(get_node_value(root, "verbosity"));
+  }
 
 
+  write_message("Reading settings XML file...", 5);
+
+  read_settings_xml(root);
 
 }
 
-} // namespace openmc
+void read_settings_xml(pugi::xml_node root)
+{
+  using namespace settings;
+  using namespace pugi;
+
+  // Check run mode if it hasn't been set from the command line
+  xml_node node_mode;
+  if (run_mode == RunMode::UNSET) {
+    if (check_for_node(root, "run_mode")) {
+      std::string temp_str = get_node_value(root, "run_mode", true, true);
+      if (temp_str == "steady") {
+        run_mode = RunMode::STEADY;
+      } else if (temp_str == "design") {
+        run_mode = RunMode::DESIGN;
+      } else if (temp_str == "sensitivity") {
+        run_mode = RunMode::SENSITIVITY;
+      } else if (temp_str == "optimize") {
+        run_mode = RunMode::OPTIMIZE;
+      } else if (temp_str == "transient restart") {
+        run_mode = RunMode::TRANSIENT;
+      } else {
+        fatal_error("Unrecognized run mode: " + temp_str);
+      }
+    }
+  }
+
+}
+
+} // namespace opensd

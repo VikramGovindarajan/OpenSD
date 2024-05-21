@@ -26,17 +26,17 @@ class Settings:
         Time slot.
     run_mode : {'steady', 'design', 'sensitivity', 'optimize', 'transient restart'}
         The type of calculation to perform (default is 'steady')
+    verbosity : int
+        Verbosity during simulation between 1 and 10. Verbosity levels are
+        described in :ref:`verbosity`.
     """
 
     def __init__(self, **kwargs):
         
         self._run_mode = RunMode.STEADY
         self._tim_slot = np.array([0.])
-        # if hasattr(scheduler,"tim_slot"):
-            # tim_slot = scheduler.tim_slot
-        # else:
-            # tim_slot = np.arange(scheduler.delt,scheduler.etime+scheduler.delt,scheduler.delt)
-
+        self._verbosity = None
+        
         for key, value in kwargs.items():
             setattr(self, key, value)
 
@@ -69,7 +69,8 @@ class Settings:
         element = ET.Element("settings")
         self._create_run_mode_subelement(element)
         self._create_tim_slot_subelement(element)
-
+        self._create_verbosity_subelement(element)
+        
         # Clean the indentation in the file to be user-readable
         clean_indentation(element)
         reorder_attributes(element)
@@ -83,3 +84,8 @@ class Settings:
     def _create_tim_slot_subelement(self, root):
         elem = ET.SubElement(root, "tim_slot")
         elem.text = np.array_str(self._tim_slot)
+
+    def _create_verbosity_subelement(self, root):
+        if self._verbosity is not None:
+            element = ET.SubElement(root, "verbosity")
+            element.text = str(self._verbosity)

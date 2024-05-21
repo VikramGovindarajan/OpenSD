@@ -53,6 +53,15 @@ void output(const std::string& message, std::ostream& out, int indent)
   }
 }
 
+void write_message(const std::string& message, int level)
+{
+
+  if (level <= settings::verbosity) {
+    std::cout << " ";
+    output(message, std::cout, 1);
+  }
+}
+
 void fatal_error(const std::string& message, int err)
 {
 

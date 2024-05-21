@@ -25,5 +25,7 @@ namespace opensd {
   fatal_error(std::string {message, std::strlen(message)});
 }
 
+void write_message(const std::string& message, int level = 0);
+
 } // namespace opensd
 #endif // OPENSD_ERROR_H

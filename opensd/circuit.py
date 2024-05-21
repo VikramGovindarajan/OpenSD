@@ -155,4 +155,16 @@ class Circuit:
                 if node.elevation != 0.:
                     subelement.set("elevation", str(node.elevation))
 
+        if self.pipes:
+            for pipe in self.pipes:
+                subelement = ET.SubElement(element, "Pipe")
+                subelement.set("identifier", pipe.identifier)
+                subelement.set("diameter",   str(pipe.diameter))
+                subelement.set("length",     str(pipe.length))
+                subelement.set("unode",      str(pipe.unode.identifier))
+                subelement.set("dnode",      str(pipe.dnode.identifier))
+                
+                # if node.elevation != 0.:
+                    # subelement.set("elevation", str(node.elevation))
+
         return element

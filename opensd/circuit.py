@@ -29,7 +29,7 @@ class Circuit:
     
     def __init__(self, **kwargs):
         self._registry.append(self)
-        self._identifier = ""
+        self.identifier = ""
         self.solveSS = True
         self.nodes = []
         self.pipes = []
@@ -134,7 +134,7 @@ class Circuit:
         """
         # Reset xml element tree
         element = ET.Element("circuit")
-        element.set("identifier", str(self._identifier))
+        element.set("identifier", str(self.identifier))
         
         if self.solveSS:
             element.set("solveSS", "true")

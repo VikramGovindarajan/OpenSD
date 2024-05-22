@@ -24,9 +24,9 @@ class Geometry(list):
         for item in items:
             super().append(item)
 
-            if type(item)==Circuit:
-                pref,tref,href = item.get_reference_prop()
-                item.create_branches(pref,tref,href)
+            # if type(item)==Circuit:
+                # pref,tref,href = item.get_reference_prop()
+                # item.create_branches(pref,tref,href)
 
     def export_to_xml(self, path: PathLike = 'geometry.xml'):
         """Export geometry to an XML file.

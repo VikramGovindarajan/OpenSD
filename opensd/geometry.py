@@ -1,14 +1,14 @@
 from pathlib import Path
 import lxml.etree as ET
 from ._xml import clean_indentation, reorder_attributes
-from opensd.checkvalue import PathLike, CheckedList
+from opensd.checkvalue import PathLike
 from opensd.circuit import Circuit
 
-class Geometry(CheckedList):
+class Geometry(list):
     """Geometry representing a collection of circuits and heat slabs.
 
     This class corresponds directly to the geometry.xml input file. It can be
-    thought of as a normal Python list where each member is a :class:`Circuit`
+    thought of as a normal Python list where each member is :class:`Circuit`
     or :class:`HeatSlab`.
     It behaves like a list as the following example demonstrates:
 
@@ -21,16 +21,17 @@ class Geometry(CheckedList):
 
     Parameters
     ----------
-    geometry : Iterable of openmc.Circuit, openmc.HeatSlab
+    items : Iterable of opensd.Circuit, opensd.HeatSlab
         Items (circuits or heatslabs) to add to the collection
 
     """
 
-    def __init__(self, items=None):
-        super().__init__(Circuit, 'circuits collection')
+    def __init__(self, items):
+        super().__init__()
+        
+        for item in items:
+            super().append(item)
 
-        if items is not None:
-            self += items
 
     def export_to_xml(self, path: PathLike = 'geometry.xml'):
         """Export geometry to an XML file.

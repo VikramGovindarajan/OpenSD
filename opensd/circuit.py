@@ -294,11 +294,6 @@ class Circuit:
         """Create a 'circuit' element to be written to an XML file.
 
         """
-        
-        pref,tref,href = self.get_reference_prop()
-        
-        self.create_branches(pref,tref,href)
-                        
 
         # Reset xml element tree
         element = ET.Element("circuit")

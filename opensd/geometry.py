@@ -10,14 +10,6 @@ class Geometry(list):
     This class corresponds directly to the geometry.xml input file. It can be
     thought of as a normal Python list where each member is :class:`Circuit`
     or :class:`HeatSlab`.
-    It behaves like a list as the following example demonstrates:
-
-    >>> circuit1 = openmc.Circuit()
-    >>> circuit2 = openmc.Circuit()
-    >>> heatslab1 = openmc.HeatSlab()
-    >>> m = openmc.Geometry([circuit1])
-    >>> m.append(circuit2)
-    >>> m += [heatslab1]
 
     Parameters
     ----------
@@ -32,6 +24,9 @@ class Geometry(list):
         for item in items:
             super().append(item)
 
+            if type(item)==Circuit:
+                pref,tref,href = item.get_reference_prop()
+                item.create_branches(pref,tref,href)
 
     def export_to_xml(self, path: PathLike = 'geometry.xml'):
         """Export geometry to an XML file.

@@ -30,12 +30,35 @@ class Settings:
         Verbosity during simulation between 1 and 10. Verbosity levels are
         described in :ref:`verbosity`.
     """
+    T_ambient = 300.
 
     def __init__(self, **kwargs):
         
         self._run_mode = RunMode.STEADY
         self._tim_slot = np.array([0.])
         self._verbosity = None
+
+        self._no_main_iter = 2500
+
+        self._conv_crit_flow=1.E-10
+        self._no_flow_iter = 300
+
+        self._p_ambient = 1.E5
+
+        self._temp_solve = True
+        self._conv_crit_temp_SS = 1.E-10
+        self._conv_crit_temp_trans = self._conv_crit_temp_SS
+
+        self._conv_crit_ht = 1.E-10
+
+        self._ZERO = 1.E-8
+
+        self._show_warn = False
+
+        self._alpha_mom = np.array(0.6)
+        self._alpha_heat = np.array(0.6)
+        self._alpha_ener = np.array(0.6)
+
         
         for key, value in kwargs.items():
             setattr(self, key, value)

@@ -1,9 +1,12 @@
 import numpy as np
 import lxml.etree as ET
+import CoolProp
 from opensd.node import Node,Reservoir,TPTank
 from opensd.pipe import Pipe
 from opensd.bc import BC
 from opensd.project import get_comp
+from opensd.settings import Settings
+from opensd.branch import Branch
 
 class Circuit:
     """Flow circuit representing a collection of nodes, pipes, and other flow elements.
@@ -49,7 +52,7 @@ class Circuit:
         self._flag_tp = flag_tp
         
         # if fllib=="CoolProp":
-            # self.flstate=CoolProp.AbstractState("BICUBIC&HEOS",self.flname)
+        self.flstate=CoolProp.AbstractState("BICUBIC&HEOS",self._flname)
         # elif fllib=="thiravam":
             # self.flstate=thiravam.state(self.flname)
         # elif fllib=="User":
@@ -128,10 +131,175 @@ class Circuit:
         self.BCs.append(bc)
         return bc
 
+    def get_reference_prop(self):
+        plist = []
+        tlist = []
+        hlist = []
+        for BC in self.BCs:
+            if BC.enabled:
+                node = BC.node
+                if BC.var == 'msource':
+                    BC.node.msource = BC.bval
+                    if BC.msrc_cond is not None:
+                        BC.node.tenth_msrc = BC.node.self.calc_enth(BC.msrc_cond[0],BC.msrc_cond[1],BC.msrc_cond[2]) #note: mass source conditions to be specified as static quantities e.g. static pressure and static enthalpy. Unlike boundary conditions, where total quantities are specified
+                        # hlist.append(BC.node.tenth_msrc)
+                elif BC.var == 'P':
+                    BC.node.tpres_old = BC.bval
+                    plist.append(BC.node.tpres_old)
+                    BC.node.circuit.Pbound_ind.append(BC.node.node_ind)
+                elif BC.var == 'T':
+                    BC.node.ttemp_old = BC.bval
+                    tlist.append(BC.node.ttemp_old)
+                elif BC.var == "H":
+                    BC.node.tenth_old = BC.bval
+                    if 'msource' in BC.node.fixed_var:
+                        BC.node.tenth_msrc = BC.node.tenth_old
+                    hlist.append(BC.node.tenth_old)
+                else:
+                    print ("improper boundary condition. stopping",BC.var)
+                    sys.exit()
+
+        self.Pbound_ind.sort()
+
+        for BC in self.BCs:
+            if BC.enabled and BC.var == 'P':
+                if 'T' in BC.node.fixed_var:
+                    BC.node.tenth_old = BC.node.self.calc_enth(CoolProp.PT_INPUTS,BC.node.tpres_old,BC.node.ttemp_old)
+                    hlist.append(BC.node.tenth_old)
+                elif 'H' in BC.node.fixed_var:
+                    BC.node.ttemp_old = BC.node.self.calc_temp(CoolProp.HmassP_INPUTS,BC.node.tenth_old,BC.node.tpres_old)
+                    tlist.append(BC.node.ttemp_old)
+
+        if len(plist) == 0:
+            print ("warning: ambient pressure assumed as reference pressure for the circuit")
+            pref = solver_settings.p_ambient
+        else:
+            pmax = max(plist)
+            pref = pmax #pmean = sum(plist)/len(plist) didn't converge for validation case 6
+        if len(tlist) == 0 and len(hlist) == 0:
+            print ("warning: ambient temperature assumed in the circuit")
+            tmean = Settings.T_ambient
+            tref = tmean
+            href = self.calc_enth(CoolProp.PT_INPUTS,pref,tref)
+        elif len(tlist) == 0 and len(hlist) != 0:
+            hmean = sum(hlist)/len(hlist)
+            href=hmean
+            tref = self.calc_temp(CoolProp.HmassP_INPUTS,href,pref)
+        elif len(hlist) == 0 and len(tlist) != 0:
+            tmean = sum(tlist)/len(tlist)
+            tref=tmean
+            href = self.calc_enth(CoolProp.PT_INPUTS,pref,tref)
+        else:
+            tmean = sum(tlist)/len(tlist)
+            tref=tmean
+            hmean = sum(hlist)/len(hlist)
+            href=hmean
+        return pref,tref,href
+
+    def create_branches(self,pref,tref,href):
+        for node in self.nodes:
+            node.blocking = False
+            if 'P' in node.fixed_var or 'msource' in node.fixed_var or len(node.ofaces) != 1 or len(node.ifaces) != 1:
+                node.blocking = True
+        
+        for face in self.faces:
+            face.assigned = False
+        
+        for face in self.faces:
+            if not face.assigned: 
+                branch = Branch(face.unode)
+                hnode = face.dnode
+                while not hnode.blocking:
+                    branch.nodes.append(hnode)
+                    branch.faces.append(face)
+                    face.branch = branch
+                    face.assigned = True
+                    face = hnode.ofaces[0]
+                    hnode = face.dnode
+                else:
+                    branch.nodes.append(hnode)
+                    branch.faces.append(face)
+                    face.assigned = True
+                    face.branch = branch
+
+        for branch in self.branches:
+            branch.hlist = []
+            branch.plist = []
+            for node in branch.nodes:
+                if hasattr(node,'tenth_old'):
+                    branch.hlist.append(node.tenth_old)
+                if hasattr(node,'tpres_old'):
+                    branch.plist.append(node.tpres_old)
+            if branch.hlist != []:
+                branch.href = max(branch.hlist)
+            if branch.plist != []:
+                branch.pref = max(branch.plist)
+            
+        for node in self.nodes: #to assign enth for guess valued nodes
+            if hasattr(node,'ttemp_old') and 'T' not in node.fixed_var and 'H' not in node.fixed_var:
+                if 'P' in node.fixed_var or hasattr(node,'tpres_old'):
+                    node.tenth_old = self.calc_enth(CoolProp.PT_INPUTS,node.tpres_old,node.ttemp_old)
+                else:
+                    node.tenth_old = self.calc_enth(CoolProp.PT_INPUTS,pref,node.ttemp_old)
+            if hasattr(node,'tenth_old') and ('H' not in node.fixed_var and not('P' in node.fixed_var and 'T' in node.fixed_var)):
+                if 'P' in node.fixed_var or hasattr(node,'tpres_old'):
+                    node.circuit.flstate.update(CoolProp.HmassP_INPUTS,node.tenth_old,node.tpres_old)
+                    node.ttemp_old = node.circuit.flstate.T()
+                else:
+                    node.circuit.flstate.update(CoolProp.HmassP_INPUTS,node.tenth_old,pref)
+                    node.ttemp_old = node.circuit.flstate.T()
+
+        for branch in self.branches:
+            for node in branch.nodes:
+                if not hasattr(node,'tenth_old') and hasattr(branch,'href'):
+                    node.tenth_old = branch.href
+                if not hasattr(node,'tpres_old') and hasattr(branch,'pref'):
+                    node.tpres_old = branch.pref
+
+        for branch in self.branches:
+            if 'msource' in branch.nodes[0].fixed_var:
+                if branch.nodes[0].msource == 0.:
+                    branch.isolated = True
+
+        for node in self.nodes: #user nodes
+            if not hasattr(node,'tpres_old'):
+                if node.identifier.find("pipe") == -1:
+                    node.tpres_old = pref
+        for node in self.nodes: #internal nodes
+            if not hasattr(node,'tpres_old'):
+                if node.identifier.find("pipe") != -1:
+                    for pipe in self.pipes:
+                        for i,cell in enumerate(pipe.nodes):
+                            unode = pipe.faces[0].unode
+                            dnode = pipe.faces[-1].dnode
+                            pres = unode.tpres_old+(dnode.tpres_old-unode.tpres_old)*(i+1)/pipe.ncell
+                            cell.tpres_old = pres
+            
+            if not hasattr(node,'ttemp_old'):
+                node.ttemp_old = tref
+            if not hasattr(node,'tenth_old'):
+                node.tenth_old = href
+                
+            node.assign_staticvar()
+            # node.assign_prop(node.spres_old,node.senth_old)
+            # node.update_gues()
+            # print node.spres_gues
+
+        for face in self.faces:
+            face.assign_statevar()
+            # face.assign_prop(self.flag_tp,"Homogeneous")
+            # face.update_gues()
+
     def to_xml_element(self):
         """Create a 'circuit' element to be written to an XML file.
 
         """
+        
+        pref,tref,href = self.get_reference_prop()
+        
+        self.create_branches(pref,tref,href)
+                        
+
         # Reset xml element tree
         element = ET.Element("circuit")
         element.set("identifier", str(self.identifier))
@@ -168,3 +336,11 @@ class Circuit:
                     # subelement.set("elevation", str(node.elevation))
 
         return element
+
+    def calc_enth(self,input_pair,val1,val2):
+        if input_pair == 9:
+            self.flstate.update(input_pair,val1,val2)
+            return self.flstate.hmass()
+        else:
+            print ("input_pair not recognized. stopping",input_pair)
+            sys.exit()

@@ -93,6 +93,12 @@ class Face(object): #partial class
         self.Gcr = 1.E8
         self.pcr = 0.
 
+    def assign_statevar(self):
+        self.tpres_old = 0.5*(self.unode.tpres_old+self.dnode.tpres_old)
+        self.spres_old = 0.5*(self.unode.spres_old+self.dnode.spres_old)
+        self.ttemp_old = 0.5*(self.unode.ttemp_old+self.dnode.ttemp_old)
+        self.stemp_old = 0.5*(self.unode.stemp_old+self.dnode.stemp_old)
+
 class PFace(Face):
 
     def __init__(self,faceno,pipe,unode,ufrac,dnode,dfrac,diameter,cfarea,delx,delz,fricopt,roughness):

@@ -4,6 +4,7 @@
 
 #include "opensd/node.h"
 #include "opensd/pipe.h"
+#include "opensd/bc.h"
 #include "opensd/error.h"
 #include "opensd/vector.h"
 #include "opensd/memory.h"
@@ -32,12 +33,12 @@ Circuit::Circuit(pugi::xml_node cir_node)
   }
         
   // Read the circuit fluid
-  std::string flname_str {get_node_value(cir_node, "flname")};
+  flname_ = get_node_value(cir_node, "flname");
   
   // Read the fluid nodes, pipes and bcs
   read_flnodes(cir_node);
   read_pipes(cir_node);
-  // read_bcs(cir_node);
+  read_bcs(cir_node);
 
 }
 

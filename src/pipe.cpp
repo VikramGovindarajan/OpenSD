@@ -27,6 +27,11 @@ Pipe::Pipe(pugi::xml_node pipe_node)
     fatal_error("Must specify identifier of pipe in geometry XML file.");
   }
 
+  diameter_ = stod(get_node_value(pipe_node, "diameter"));
+  length_   = stod(get_node_value(pipe_node, "length"));
+  dnode_    = get_node_value(pipe_node, "dnode");
+  unode_    = get_node_value(pipe_node, "unode");
+
 }
 
 void read_pipes(pugi::xml_node node)
@@ -35,8 +40,7 @@ void read_pipes(pugi::xml_node node)
   for (pugi::xml_node pipe_node : node.children("pipe")) {
     model::pipes.push_back(make_unique<Pipe>(pipe_node));
   }
-  for (const auto& pipe : model::pipes)
-    std::cout << pipe->identifier_ << std::endl;
+
 }
 
 } // namespace opensd

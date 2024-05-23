@@ -313,34 +313,17 @@ class Circuit:
 
         if self.nodes:
             for node in self.nodes:
-                subelement = ET.SubElement(element, "node")
-                subelement.set("identifier", node.identifier)
-                if node.elevation != 0.:
-                    subelement.set("elevation", str(node.elevation))
+                node.to_xml_element(element)
 
         if self.pipes:
             for pipe in self.pipes:
-                subelement = ET.SubElement(element, "pipe")
-                subelement.set("identifier", pipe.identifier)
-                subelement.set("diameter",   str(pipe.diameter))
-                subelement.set("length",     str(pipe.length))
-                subelement.set("unode",      str(pipe.unode.identifier))
-                subelement.set("dnode",      str(pipe.dnode.identifier))
-                
-                # if node.elevation != 0.:
-                    # subelement.set("elevation", str(node.elevation))
+                pipe.to_xml_element(element)
 
+                
         if self.bcs:
             for bc in self.bcs:
-                subelement = ET.SubElement(element, "bc")
-                subelement.set("identifier", bc.identifier)
-                subelement.set("node",       bc.node.identifier)
-                subelement.set("var",        bc.var)
-                subelement.set("bval",       str(bc.bval))
+                bc.to_xml_element(element)
                 
-                # if node.elevation != 0.:
-                    # subelement.set("elevation", str(node.elevation))
-
         return element
 
     # def calc_enth(self,input_pair,val1,val2):

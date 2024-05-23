@@ -1,7 +1,7 @@
-//! \file pipe.h
+//! \file bc.h
 
-#ifndef OPENSD_PIPE_H
-#define OPENSD_PIPE_H
+#ifndef OPENSD_BC_H
+#define OPENSD_BC_H
 
 #include "pugixml.hpp"
 #include "opensd/vector.h"
@@ -13,24 +13,23 @@ namespace opensd {
 // Global variables
 //==============================================================================
 
-class Pipe;
+class BC;
 
 namespace model {
-extern vector<unique_ptr<Pipe>> pipes;
+extern vector<unique_ptr<BC>> bcs;
 } // namespace model
 
 //==============================================================================
-//! \class Pipe
+//! \class BC
 //==============================================================================
 
-class Pipe {
+class BC {
 public:
   std::string identifier_; //!< User-defined identifier
-  std::string dnode_;
-  std::string unode_;
-  double diameter_; //!< Pipe diameter in [m]
-  double length_; //!< Pipe length in [m]
-  explicit Pipe(pugi::xml_node pipe_node);
+  std::string node_;
+  std::string var_;
+  double val_; //!< value in [SI]
+  explicit BC(pugi::xml_node bc_node);
 
 protected:
 
@@ -40,7 +39,7 @@ protected:
 // Non-member functions
 //==============================================================================
 
-void read_pipes(pugi::xml_node node);
+void read_bcs(pugi::xml_node node);
 
 } // namespace opensd
 

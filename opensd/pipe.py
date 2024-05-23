@@ -1,5 +1,6 @@
 import math
 import numpy as np
+import lxml.etree as ET
 
 class Pipe(object):
 
@@ -68,7 +69,16 @@ class Pipe(object):
         # wall = Wall(thk,solname,sollib,restraint)
         # for face in self.faces:
             # face.wall = wall
-    
+
+    def to_xml_element(self,element):
+        subelement = ET.SubElement(element, "pipe")
+        subelement.set("identifier", self.identifier)
+        subelement.set("diameter",   str(self.diameter))
+        subelement.set("length",     str(self.length))
+        subelement.set("unode",      str(self.unode.identifier))
+        subelement.set("dnode",      str(self.dnode.identifier))
+
+
 class Face(object): #partial class
     def __init__(self,faceno,unode,ufrac,dnode,dfrac):
         

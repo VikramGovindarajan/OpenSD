@@ -26,6 +26,7 @@ extern vector<unique_ptr<Circuit>> circuits;
 class Circuit {
 public:
   std::string identifier_; //!< User-defined identifier
+  std::string flname_;
   explicit Circuit(pugi::xml_node cir_node);
 
 protected:

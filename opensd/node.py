@@ -1,4 +1,5 @@
 import CoolProp
+import lxml.etree as ET
 
 class Node(object):
 
@@ -35,12 +36,17 @@ class Node(object):
         self.volume = volume
         self.pc_flag = False
 
-    def assign_staticvar(self):
-        self.spres_old = self.tpres_old
-        self.stemp_old = self.ttemp_old
-        self.senth_old = self.tenth_old
-        self.velocity = 0.
+    # def assign_staticvar(self):
+        # self.spres_old = self.tpres_old
+        # self.stemp_old = self.ttemp_old
+        # self.senth_old = self.tenth_old
+        # self.velocity = 0.
 
+    def to_xml_element(self,element):
+        subelement = ET.SubElement(element, "node")
+        subelement.set("identifier", self.identifier)
+        if self.elevation != 0.:
+            subelement.set("elevation", str(self.elevation))
 
 class Reservoir(Node):
     def __init__(self,identifier,circuit,volume,heat_input,elevation,tpres_old,ttemp_old,tenth_old,geom):

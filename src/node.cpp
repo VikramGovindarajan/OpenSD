@@ -32,12 +32,12 @@ Node::Node(pugi::xml_node flnode_node)
 void read_flnodes(pugi::xml_node node)
 {
   // Count the number of nodes
-  int n_flnodes = 0;
+  // int n_flnodes = 0;
   for (pugi::xml_node flnode_node : node.children("node")) {
-    n_flnodes++;
+    // n_flnodes++;
     model::nodes.push_back(make_unique<Node>(flnode_node));
   }
-  std::cout<<"no. of nodes = "<<n_flnodes<<"\n";
+
 }
 
 } // namespace opensd

@@ -3,6 +3,7 @@
 #include <iostream>
 
 #include "opensd/node.h"
+#include "opensd/pipe.h"
 #include "opensd/error.h"
 #include "opensd/vector.h"
 #include "opensd/memory.h"
@@ -33,17 +34,19 @@ Circuit::Circuit(pugi::xml_node cir_node)
   // Read the circuit fluid
   std::string flname_str {get_node_value(cir_node, "flname")};
   
-  // Read the circuit nodes
+  // Read the fluid nodes, pipes and bcs
   read_flnodes(cir_node);
+  read_pipes(cir_node);
+  // read_bcs(cir_node);
 
 }
 
 void read_circuits(pugi::xml_node node)
 {
   // Count the number of nodes
-  int n_circuits = 0;
+  // int n_circuits = 0;
   for (pugi::xml_node cir_node : node.children("circuit")) {
-    n_circuits++;
+    // n_circuits++;
     model::circuits.push_back(make_unique<Circuit>(cir_node));
   }
 

@@ -1,3 +1,5 @@
+//! \file circuit.h
+
 #ifndef OPENSD_CIRCUIT_H
 #define OPENSD_CIRCUIT_H
 

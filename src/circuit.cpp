@@ -46,7 +46,6 @@ void read_circuits(pugi::xml_node node)
     n_circuits++;
     model::circuits.push_back(make_unique<Circuit>(cir_node));
   }
-  std::cout << "no. of circuits = " << n_circuits << std::endl;
 
 
 }

@@ -313,14 +313,14 @@ class Circuit:
 
         if self.nodes:
             for node in self.nodes:
-                subelement = ET.SubElement(element, "Node")
+                subelement = ET.SubElement(element, "node")
                 subelement.set("identifier", node.identifier)
                 if node.elevation != 0.:
                     subelement.set("elevation", str(node.elevation))
 
         if self.pipes:
             for pipe in self.pipes:
-                subelement = ET.SubElement(element, "Pipe")
+                subelement = ET.SubElement(element, "pipe")
                 subelement.set("identifier", pipe.identifier)
                 subelement.set("diameter",   str(pipe.diameter))
                 subelement.set("length",     str(pipe.length))
@@ -332,7 +332,7 @@ class Circuit:
 
         if self.bcs:
             for bc in self.bcs:
-                subelement = ET.SubElement(element, "BC")
+                subelement = ET.SubElement(element, "bc")
                 subelement.set("identifier", bc.identifier)
                 subelement.set("node",       bc.node.identifier)
                 subelement.set("var",        bc.var)

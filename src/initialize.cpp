@@ -2,6 +2,7 @@
 // #include "opensd/capi.h"
 // #include "opensd/constants.h"
 #include "opensd/settings.h"
+#include "opensd/geometry_aux.h"
 
 int opensd_init(int argc, char* argv[])
 {
@@ -19,7 +20,7 @@ namespace opensd {
 void read_separate_xml_files()
 {
   read_settings_xml();
-  // read_geometry_xml();
+  read_geometry_xml();
 
 }
 

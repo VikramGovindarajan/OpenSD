@@ -10,6 +10,8 @@ int main(int argc, char* argv[])
   int err;
 
   err = opensd_init(argc, argv);
+  
+  opensd_run();
 
   // std::cout << CoolProp::PropsSI("T","P",101325,"Q",0,"Water") << std::endl;
   std::cout << PI << std::endl;

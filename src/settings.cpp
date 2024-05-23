@@ -16,7 +16,10 @@ namespace settings {
   std::string path_input;
   RunMode run_mode {RunMode::UNSET};
   int verbosity {7};
-
+  double alpha_mom;
+  vector<double> tim_slot;
+  int no_main_iter;
+  int no_flow_iter;
 } // namespace settings
 
 //==============================================================================
@@ -90,6 +93,11 @@ void read_settings_xml(pugi::xml_node root)
       }
     }
   }
+  
+  alpha_mom = stod(get_node_value(root, "alpha_mom"));
+  tim_slot = get_node_array<double>(root, "tim_slot");
+  no_main_iter = stod(get_node_value(root, "no_main_iter"));
+  no_flow_iter = stod(get_node_value(root, "no_flow_iter"));
 
 }
 

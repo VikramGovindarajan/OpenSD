@@ -35,7 +35,7 @@ class Settings:
     def __init__(self, **kwargs):
         
         self._run_mode = RunMode.STEADY
-        self._tim_slot = np.array([0.])
+        self._tim_slot = [0.]
         self._verbosity = None
 
         self._no_main_iter = 2500
@@ -55,7 +55,7 @@ class Settings:
 
         self._show_warn = False
 
-        self._alpha_mom = np.array(0.6)
+        self._alpha_mom = 0.6
         self._alpha_heat = np.array(0.6)
         self._alpha_ener = np.array(0.6)
 
@@ -93,6 +93,9 @@ class Settings:
         self._create_run_mode_subelement(element)
         self._create_tim_slot_subelement(element)
         self._create_verbosity_subelement(element)
+        self._create_alpha_mom_subelement(element)
+        self._create_main_iter_subelement(element)
+        self._create_flow_iter_subelement(element)
         
         # Clean the indentation in the file to be user-readable
         clean_indentation(element)
@@ -106,9 +109,21 @@ class Settings:
 
     def _create_tim_slot_subelement(self, root):
         elem = ET.SubElement(root, "tim_slot")
-        elem.text = np.array_str(self._tim_slot)
+        elem.text = ' '.join(map(str, self._tim_slot))
 
     def _create_verbosity_subelement(self, root):
         if self._verbosity is not None:
             element = ET.SubElement(root, "verbosity")
             element.text = str(self._verbosity)
+
+    def _create_alpha_mom_subelement(self, root):
+        elem = ET.SubElement(root, "alpha_mom")
+        elem.text = str(self._alpha_mom)
+
+    def _create_main_iter_subelement(self, root):
+        elem = ET.SubElement(root, "no_main_iter")
+        elem.text = str(self._no_main_iter)
+
+    def _create_flow_iter_subelement(self, root):
+        elem = ET.SubElement(root, "no_flow_iter")
+        elem.text = str(self._no_flow_iter)

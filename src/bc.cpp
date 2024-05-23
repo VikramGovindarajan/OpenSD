@@ -27,7 +27,7 @@ BC::BC(pugi::xml_node bc_node)
     fatal_error("Must specify identifier of BC in geometry XML file.");
   }
 
-  val_  = get_node_value(bc_node, "val");
+  val_  = stod(get_node_value(bc_node, "val"));
   var_  = get_node_value(bc_node, "var");
   node_ = get_node_value(bc_node, "node");
 

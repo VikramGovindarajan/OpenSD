@@ -9,6 +9,7 @@
 #include "pugixml.hpp"
 
 #include "opensd/constants.h"
+#include "opensd/vector.h"
 
 namespace opensd {
 
@@ -22,6 +23,10 @@ extern std::string path_input;  //!< directory where main .xml files resides
 extern RunMode run_mode;       //!< Run mode ('steady', 'design', 'sensitivity', 'optimize', 'transient restart', etc.)
 // extern SolverType solver_type; //!< Solver Type (Monte Carlo or Random Ray)
 extern "C" int verbosity;          //!< How verbose to make output
+extern double alpha_mom; //!< relaxation factor
+extern vector<double> tim_slot;
+extern int no_main_iter;
+extern int no_flow_iter;
 
 } // namespace settings
 
@@ -36,6 +41,6 @@ void read_settings_xml();
 //! \param[in] root XML node for <settings>
 void read_settings_xml(pugi::xml_node root);
 
-} // namespace openmc
+} // namespace opensd
 
 #endif // OPENSD_SETTINGS_H

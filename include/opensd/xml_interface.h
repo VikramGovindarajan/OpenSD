@@ -3,6 +3,8 @@
 
 #include "pugixml.hpp"
 
+#include "opensd/vector.h"
+
 namespace opensd {
 
 inline bool check_for_node(pugi::xml_node node, const char* name)
@@ -13,7 +15,7 @@ inline bool check_for_node(pugi::xml_node node, const char* name)
 std::string get_node_value(pugi::xml_node node, const char* name,
   bool lowercase = false, bool strip = false);
 
-/* bool get_node_value_bool(pugi::xml_node node, const char* name);
+bool get_node_value_bool(pugi::xml_node node, const char* name);
 
 template<typename T>
 vector<T> get_node_array(
@@ -32,7 +34,7 @@ vector<T> get_node_array(
   return values;
 }
 
-template<typename T>
+/* template<typename T>
 xt::xarray<T> get_node_xarray(
   pugi::xml_node node, const char* name, bool lowercase = false)
 {
@@ -44,5 +46,6 @@ xt::xarray<T> get_node_xarray(
 Position get_node_position(
   pugi::xml_node node, const char* name, bool lowercase = false);
  */
+
 } // namespace opensd
 #endif // OPENSD_XML_INTERFACE_H

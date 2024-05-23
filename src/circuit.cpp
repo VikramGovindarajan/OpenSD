@@ -39,6 +39,8 @@ Circuit::Circuit(pugi::xml_node cir_node)
   read_flnodes(cir_node);
   read_pipes(cir_node);
   read_bcs(cir_node);
+  
+  this->eps_m = this->mean_flow = this->eps_h = this->eps_p = 0;
 
 }
 

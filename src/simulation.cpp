@@ -4,6 +4,7 @@
 #include <ctime>
 
 #include "opensd/settings.h"
+#include "opensd/convergence.h"
 
 //==============================================================================
 // C API functions
@@ -30,19 +31,18 @@ int opensd_run()
     }
  
     for (int main_iter = 0; main_iter < opensd::settings::no_main_iter; ++main_iter) {
-    std::cout << "main_iter";
     
       for (int flow_iter = 0; flow_iter < opensd::settings::no_flow_iter; ++flow_iter) {
-        std::cout << "flow_iter";
+
       }
     
-/*       bool converged = convergence::check_conv(time, delt, trans_sim, alpha_mom, "massmom");
+      bool converged = opensd::check_conv(opensd::simulation::current_time, opensd::simulation::delt, false, opensd::settings::alpha_mom, "massmom");
       if (converged) {
         
       } else {
         
       }
- */ 
+ 
     }
     
 /*     // Your code for post-processing and writing output

@@ -15,7 +15,9 @@
 
 int opensd_run()
 {
-    std::clock_t start_time;
+    using namespace opensd;
+	
+	std::clock_t start_time;
     start_time = std::clock();
 
   // Ensure that a timestep isn't executed in the case that the maximum number of
@@ -24,19 +26,19 @@ int opensd_run()
   // opensd::settings::alpha_mom
 
   // Loop through time slots
-  for (int i = 0; i < opensd::settings::tim_slot.size(); ++i) {
-    opensd::simulation::current_time = opensd::settings::tim_slot[i];
+  for (int i = 0; i < settings::tim_slot.size(); ++i) {
+    simulation::current_time = settings::tim_slot[i];
     if (i != 0) {
-      opensd::simulation::delt = opensd::settings::tim_slot[i] - opensd::settings::tim_slot[i - 1];
+      simulation::delt = settings::tim_slot[i] - settings::tim_slot[i-1];
     }
  
-    for (int main_iter = 0; main_iter < opensd::settings::no_main_iter; ++main_iter) {
+    for (int main_iter = 0; main_iter < settings::no_main_iter; ++main_iter) {
     
-      for (int flow_iter = 0; flow_iter < opensd::settings::no_flow_iter; ++flow_iter) {
+      for (int flow_iter = 0; flow_iter < settings::no_flow_iter; ++flow_iter) {
 
       }
     
-      bool converged = opensd::check_conv(opensd::simulation::current_time, opensd::simulation::delt, false, opensd::settings::alpha_mom, "massmom");
+      bool converged = check_conv(simulation::current_time, simulation::delt, false, settings::alpha_mom, "massmom");
       if (converged) {
         
       } else {

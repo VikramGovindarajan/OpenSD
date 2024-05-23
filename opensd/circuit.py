@@ -6,7 +6,7 @@ from opensd.pipe import Pipe
 from opensd.bc import BC
 from opensd.project import get_comp
 from opensd.settings import Settings
-from opensd.branch import Branch
+# from opensd.branch import Branch
 
 class Circuit:
     """Flow circuit representing a collection of nodes, pipes, and other flow elements.
@@ -36,7 +36,7 @@ class Circuit:
         self.solveSS = True
         self.nodes = []
         self.pipes = []
-        self.BCs =[]
+        self.bcs =[]
         self.pumps=[]
         self.orifices=[]
         self.Pbound_ind = []
@@ -128,14 +128,14 @@ class Circuit:
     def add_BC(self,identifier,bnode,bvar,bval,msrc_cond=None,trans=True,enabled=True):
         bnode = get_comp(bnode)
         bc = BC(identifier,bnode,bvar,bval,msrc_cond,trans,enabled)
-        self.BCs.append(bc)
+        self.bcs.append(bc)
         return bc
 
     # def get_reference_prop(self):
         # plist = []
         # tlist = []
         # hlist = []
-        # for BC in self.BCs:
+        # for BC in self.bcs:
             # if BC.enabled:
                 # node = BC.node
                 # if BC.var == 'msource':
@@ -161,7 +161,7 @@ class Circuit:
 
         # self.Pbound_ind.sort()
 
-        # for BC in self.BCs:
+        # for BC in self.bcs:
             # if BC.enabled and BC.var == 'P':
                 # if 'T' in BC.node.fixed_var:
                     # BC.node.tenth_old = BC.node.self.calc_enth(CoolProp.PT_INPUTS,BC.node.tpres_old,BC.node.ttemp_old)
@@ -326,6 +326,17 @@ class Circuit:
                 subelement.set("length",     str(pipe.length))
                 subelement.set("unode",      str(pipe.unode.identifier))
                 subelement.set("dnode",      str(pipe.dnode.identifier))
+                
+                # if node.elevation != 0.:
+                    # subelement.set("elevation", str(node.elevation))
+
+        if self.bcs:
+            for bc in self.bcs:
+                subelement = ET.SubElement(element, "BC")
+                subelement.set("identifier", bc.identifier)
+                subelement.set("node",       bc.node.identifier)
+                subelement.set("var",        bc.var)
+                subelement.set("bval",       str(bc.bval))
                 
                 # if node.elevation != 0.:
                     # subelement.set("elevation", str(node.elevation))

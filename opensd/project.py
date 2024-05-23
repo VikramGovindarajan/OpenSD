@@ -6,7 +6,7 @@ from opensd import circuit as comp
 def get_comp(obj):
     find = False
     for circuit in comp.Circuit._registry:
-        for item in circuit.pipes+circuit.nodes+circuit.BCs+circuit.pumps+circuit.orifices:
+        for item in circuit.pipes+circuit.nodes+circuit.bcs+circuit.pumps+circuit.orifices:
             if item.identifier == obj:
                 obj = item
                 find = True

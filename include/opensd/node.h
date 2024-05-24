@@ -20,11 +20,11 @@ class Node;
 
 class Node {
 public:
-  std::string identifier_; //!< User-defined identifier
+  std::string identifier; //!< User-defined identifier
   explicit Node(pugi::xml_node flnode_node);
-
-protected:
-
+  Node() = default;
+  double mresidue;
+  double eqn_cont();
 };
 
 //==============================================================================

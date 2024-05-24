@@ -26,7 +26,7 @@ vector<Circuit> circuits;
 Circuit::Circuit(pugi::xml_node cir_node)
 {
   if (check_for_node(cir_node, "identifier")) {
-    identifier_ = get_node_value(cir_node, "identifier");
+    identifier = get_node_value(cir_node, "identifier");
   } else {
     fatal_error("Must specify identifier of circuit in geometry XML file.");
   }

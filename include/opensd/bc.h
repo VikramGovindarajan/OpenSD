@@ -20,7 +20,7 @@ class BC;
 
 class BC {
 public:
-  std::string identifier_; //!< User-defined identifier
+  std::string identifier; //!< User-defined identifier
   std::string node_;
   std::string var_;
   double val_; //!< value in [SI]

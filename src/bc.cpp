@@ -18,7 +18,7 @@ namespace opensd {
 BC::BC(pugi::xml_node bc_node)
 {
   if (check_for_node(bc_node, "identifier")) {
-    identifier_ = get_node_value(bc_node, "identifier");
+    identifier = get_node_value(bc_node, "identifier");
   } else {
     fatal_error("Must specify identifier of BC in geometry XML file.");
   }

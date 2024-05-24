@@ -11,10 +11,6 @@ namespace opensd {
 // Global variables
 //==============================================================================
 
-namespace model {
-vector<unique_ptr<Pipe>> pipes;
-} // namespace model
-
 //==============================================================================
 // Pipe implementation
 //==============================================================================
@@ -31,15 +27,6 @@ Pipe::Pipe(pugi::xml_node pipe_node)
   length_   = stod(get_node_value(pipe_node, "length"));
   dnode_    = get_node_value(pipe_node, "dnode");
   unode_    = get_node_value(pipe_node, "unode");
-
-}
-
-void read_pipes(pugi::xml_node node)
-{
-
-  for (pugi::xml_node pipe_node : node.children("pipe")) {
-    model::pipes.push_back(make_unique<Pipe>(pipe_node));
-  }
 
 }
 

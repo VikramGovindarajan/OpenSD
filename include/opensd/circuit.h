@@ -4,8 +4,10 @@
 #define OPENSD_CIRCUIT_H
 
 #include "pugixml.hpp"
+#include "opensd/node.h"
+#include "opensd/pipe.h"
+#include "opensd/bc.h"
 #include "opensd/vector.h"
-#include "opensd/memory.h"
 
 namespace opensd {
 
@@ -16,7 +18,7 @@ namespace opensd {
 class Circuit;
 
 namespace model {
-extern vector<unique_ptr<Circuit>> circuits;
+extern vector<Circuit> circuits;
 } // namespace model
 
 //==============================================================================
@@ -32,6 +34,9 @@ public:
   double mean_flow;
   double eps_h;
   double eps_p;
+  vector<Node> nodes;
+  vector<Pipe> pipes;
+  vector<BC> bcs;
 protected:
 
 };

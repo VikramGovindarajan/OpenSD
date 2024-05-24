@@ -5,7 +5,6 @@
 
 #include "pugixml.hpp"
 #include "opensd/vector.h"
-#include "opensd/memory.h"
 
 namespace opensd {
 
@@ -14,10 +13,6 @@ namespace opensd {
 //==============================================================================
 
 class Pipe;
-
-namespace model {
-extern vector<unique_ptr<Pipe>> pipes;
-} // namespace model
 
 //==============================================================================
 //! \class Pipe
@@ -40,7 +35,6 @@ protected:
 // Non-member functions
 //==============================================================================
 
-void read_pipes(pugi::xml_node node);
 
 } // namespace opensd
 

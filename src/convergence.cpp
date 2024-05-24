@@ -14,13 +14,22 @@ namespace opensd {
 bool check_conv(double time, double delt, bool trans_sim, double alpha_mom, string opt) {
   double eps_mtot = 0.0, eps_ptot = 0.0, eps_htot = 0.0, eps_ttot = 0.0;
 
-  for (const auto& circuit : opensd::model::circuits) {
-    std::cout << circuit->identifier_ << " " << circuit->flname_ << std::endl;
+  for (auto circuit : model::circuits) {
     
-    eps_mtot = max(eps_mtot, circuit->eps_m);
-    eps_ptot = max(eps_ptot, circuit->eps_p);
+    std::vector<double> eps_mlist;
+    for (auto node : circuit.nodes) {
+      // node.mresidue = node.eqn_cont(time, delt, trans_sim, alpha_mom);
+      // if (dynamic_cast<comp::Reservoir*>(&node)) node.mresidue = 0;
+      // if (std::abs(node.mflow_in) > 1.E-5 || std::abs(node.mflow_out) > 1.E-5) {
+        // eps_mlist.push_back(std::abs(node.mresidue));
+      // }
+    }
+    
+    
+    eps_mtot = max(eps_mtot, circuit.eps_m);
+    eps_ptot = max(eps_ptot, circuit.eps_p);
     if (opt == "all") {
-      eps_htot = max(eps_htot, circuit->eps_h);
+      eps_htot = max(eps_htot, circuit.eps_h);
     }
   }
 

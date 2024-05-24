@@ -5,7 +5,6 @@
 
 #include "pugixml.hpp"
 #include "opensd/vector.h"
-#include "opensd/memory.h"
 
 namespace opensd {
 
@@ -14,10 +13,6 @@ namespace opensd {
 //==============================================================================
 
 class Node;
-
-namespace model {
-extern vector<unique_ptr<Node>> nodes;
-} // namespace model
 
 //==============================================================================
 //! \class Node
@@ -36,7 +31,6 @@ protected:
 // Non-member functions
 //==============================================================================
 
-void read_flnodes(pugi::xml_node node);
 
 } // namespace opensd
 

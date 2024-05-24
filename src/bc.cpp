@@ -11,10 +11,6 @@ namespace opensd {
 // Global variables
 //==============================================================================
 
-namespace model {
-vector<unique_ptr<BC>> bcs;
-} // namespace model
-
 //==============================================================================
 // BC implementation
 //==============================================================================
@@ -33,13 +29,5 @@ BC::BC(pugi::xml_node bc_node)
 
 }
 
-void read_bcs(pugi::xml_node node)
-{
-
-  for (pugi::xml_node bc_node : node.children("bc")) {
-    model::bcs.push_back(make_unique<BC>(bc_node));
-  }
-
-}
 
 } // namespace opensd

@@ -7,7 +7,6 @@
 #include "opensd/bc.h"
 #include "opensd/error.h"
 #include "opensd/vector.h"
-#include "opensd/memory.h"
 #include "opensd/xml_interface.h"
 
 namespace opensd {
@@ -17,7 +16,7 @@ namespace opensd {
 //==============================================================================
 
 namespace model {
-vector<unique_ptr<Circuit>> circuits;
+vector<Circuit> circuits;
 } // namespace model
 
 //==============================================================================
@@ -36,9 +35,17 @@ Circuit::Circuit(pugi::xml_node cir_node)
   flname_ = get_node_value(cir_node, "flname");
   
   // Read the fluid nodes, pipes and bcs
-  read_flnodes(cir_node);
-  read_pipes(cir_node);
-  read_bcs(cir_node);
+  for (pugi::xml_node flnode_node : cir_node.children("node")) {
+    this->nodes.push_back(Node(flnode_node));
+  }
+
+  for (pugi::xml_node pipe : cir_node.children("pipe")) {
+    this->pipes.push_back(Pipe(pipe));
+  }
+
+  for (pugi::xml_node bc : cir_node.children("bc")) {
+    this->bcs.push_back(BC(bc));
+  }
   
   this->eps_m = this->mean_flow = this->eps_h = this->eps_p = 0;
 
@@ -50,9 +57,8 @@ void read_circuits(pugi::xml_node node)
   // int n_circuits = 0;
   for (pugi::xml_node cir_node : node.children("circuit")) {
     // n_circuits++;
-    model::circuits.push_back(make_unique<Circuit>(cir_node));
+    model::circuits.push_back(Circuit(cir_node));
   }
-
 
 }
 

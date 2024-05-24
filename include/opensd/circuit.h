@@ -30,6 +30,7 @@ public:
   std::string identifier; //!< User-defined identifier
   std::string flname_;
   explicit Circuit(pugi::xml_node cir_node);
+  // Circuit() = default;
   double eps_m;
   double mean_flow;
   double eps_h;

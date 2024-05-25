@@ -22,7 +22,8 @@ class Node {
 public:
   std::string identifier; //!< User-defined identifier
   explicit Node(pugi::xml_node flnode_node);
-  // Node() = default;
+  Node() = default;
+  // virtual ~Node() = default;
   double mresidue;
   double eqn_cont();
 };

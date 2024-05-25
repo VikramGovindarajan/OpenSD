@@ -26,6 +26,8 @@ public:
   double diameter; //!< Pipe diameter in [m]
   double length; //!< Pipe length in [m]
   explicit Pipe(pugi::xml_node pipe_node);
+  Pipe() = default;
+  // virtual ~Pipe() = default;
   int ncell;
 
 protected:
@@ -35,10 +37,10 @@ protected:
 class Face {
 public:
   int faceno;
-  Node* unode;
+  Node unode;
   double ufrac;
   double uheight;
-  Node* dnode;
+  Node dnode;
   double dfrac;
   double dheight;
   double vflow_old;
@@ -52,13 +54,15 @@ public:
   double presidue;
   double Gcr;
   double pcr;
-
-  virtual void assign_statevar();
+  
+  // Face() = default;
+  virtual ~Face() = default;
+  // virtual void assign_statevar();
 };
 
 class PFace : public Face {
 public:
-  Pipe* pipe;
+  Pipe pipe;
   double diameter;
   double cfarea;
   double delx;
@@ -70,9 +74,12 @@ public:
   double opening;
   // Circuit* circuit;
 
-  PFace(int faceno, Pipe* pipe, Node* unode, double ufrac, Node* dnode, double dfrac, double diameter, double cfarea, double delx, double delz, double fricopt, double roughness);
+  PFace(int faceno, Pipe pipe, Node unode, double ufrac, Node dnode, double dfrac, 
+    double diameter, double cfarea, double delx, double delz, double fricopt, double roughness);
+  PFace() = default;
+  virtual ~PFace() = default;
 
-  virtual void assign_statevar();
+  // virtual void assign_statevar();
 };
 
 

@@ -26,13 +26,13 @@ vector<Circuit> circuits;
 Circuit::Circuit(pugi::xml_node cir_node)
 {
   if (check_for_node(cir_node, "identifier")) {
-    identifier = get_node_value(cir_node, "identifier");
+    this->identifier = get_node_value(cir_node, "identifier");
   } else {
     fatal_error("Must specify identifier of circuit in geometry XML file.");
   }
         
   // Read the circuit fluid
-  flname_ = get_node_value(cir_node, "flname");
+  this->flname = get_node_value(cir_node, "flname");
   
   // Read the fluid nodes, pipes and bcs
   for (pugi::xml_node flnode_node : cir_node.children("node")) {
@@ -54,9 +54,7 @@ Circuit::Circuit(pugi::xml_node cir_node)
 void read_circuits(pugi::xml_node node)
 {
   // Count the number of nodes
-  // int n_circuits = 0;
   for (pugi::xml_node cir_node : node.children("circuit")) {
-    // n_circuits++;
     model::circuits.push_back(Circuit(cir_node));
   }
 

@@ -28,7 +28,7 @@ extern vector<Circuit> circuits;
 class Circuit {
 public:
   std::string identifier; //!< User-defined identifier
-  std::string flname_;
+  std::string flname;
   explicit Circuit(pugi::xml_node cir_node);
   // Circuit() = default;
   double eps_m;

@@ -4,6 +4,7 @@
 #define OPENSD_NODE_H
 
 #include "pugixml.hpp"
+
 #include "opensd/vector.h"
 
 namespace opensd {
@@ -13,7 +14,7 @@ namespace opensd {
 //==============================================================================
 
 class Node;
-
+class PFace;
 //==============================================================================
 //! \class Node
 //==============================================================================
@@ -26,6 +27,8 @@ public:
   // virtual ~Node() = default;
   double mresidue;
   double eqn_cont();
+  vector<PFace*> ifaces;
+  vector<PFace*> ofaces;
 };
 
 //==============================================================================

@@ -28,11 +28,13 @@ Node::Node(pugi::xml_node flnode_node)
 double Node::eqn_cont() {
   double isum_gues = 0.;
   double isum_old = 0.;
-/*   for (const auto& iface : ifaces) {
-    isum_gues += iface.ther_gues.rhomass() * iface.vflow_gues;
-    isum_old += iface.ther_old.rhomass() * iface.vflow_old;
+  // std::cout << this->identifier << size(this->ofaces) << std::endl;
+  for (auto iface : this->ifaces) {
+    // std::cout << iface->vflow_gues << std::endl;
+    // isum_gues += 1000.* iface->vflow_gues; //iface.ther_gues.rhomass()
+    // isum_old += 1000. * iface->vflow_old; //iface.ther_old.rhomass()
   }
-
+/*
   double osum_gues = 0.;
   double osum_old = 0.;
   for (const auto& oface : ofaces) {

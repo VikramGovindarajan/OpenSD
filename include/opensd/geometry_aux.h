@@ -16,8 +16,6 @@ void read_geometry_xml();
 //! \param[in] root node of geometry XML element
 void read_geometry_xml(pugi::xml_node root);
 
-void attach_faces();
-
 } // namespace opensd
 
 #endif // OPENSD_GEOMETRY_AUX_H

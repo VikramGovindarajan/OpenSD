@@ -28,8 +28,8 @@ public:
   Pipe() = default;
   // virtual ~Pipe() = default;
   int ncell;
-  Node unode;
-  Node dnode;
+  Node* unode;
+  Node* dnode;
 
 protected:
 

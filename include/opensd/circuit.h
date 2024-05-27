@@ -17,10 +17,6 @@ namespace opensd {
 
 class Circuit;
 
-namespace model {
-extern vector<Circuit> circuits;
-} // namespace model
-
 //==============================================================================
 //! \class Circuit
 //==============================================================================

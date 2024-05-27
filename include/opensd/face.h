@@ -22,13 +22,14 @@ namespace opensd {
 class Face {
 public:
   int faceno;
-  Node unode;
+  Node* unode;
   double ufrac;
   double uheight;
-  Node dnode;
+  Node* dnode;
   double dfrac;
   double dheight;
   double vflow_old;
+  double vflow_gues;
   double mflow;
   double velocity;
   double heat_input_old;
@@ -59,7 +60,7 @@ public:
   double opening;
   // Circuit* circuit;
 
-  PFace(int faceno, Pipe pipe, Node unode, double ufrac, Node dnode, double dfrac, 
+  PFace(int faceno, Pipe pipe, Node* unode, double ufrac, Node* dnode, double dfrac, 
     double diameter, double cfarea, double delx, double delz, double fricopt, double roughness);
   PFace() = default;
   virtual ~PFace() = default;

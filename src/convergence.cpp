@@ -4,7 +4,7 @@
 
 #include <iostream>
 
-#include "opensd/circuit.h"
+#include "opensd/initialize.h"
 
 namespace opensd {
     

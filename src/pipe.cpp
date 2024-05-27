@@ -30,6 +30,8 @@ Pipe::Pipe(pugi::xml_node pipe_node)
   this->dnode_str = get_node_value(pipe_node, "dnode");
   this->unode_str = get_node_value(pipe_node, "unode");
   this->ncell     = 1; //stod(get_node_value(pipe_node, "ncell"));
+  this->unode = nullptr;
+  this->dnode = nullptr;
   double ufrac;
   double dfrac;
   double cfarea;

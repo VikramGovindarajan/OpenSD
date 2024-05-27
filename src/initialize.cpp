@@ -6,7 +6,7 @@
 // #include "opensd/constants.h"
 #include "opensd/settings.h"
 #include "opensd/geometry_aux.h"
-#include "opensd/Face.h"
+#include "opensd/face.h"
 
 int opensd_init(int argc, char* argv[])
 {
@@ -30,12 +30,18 @@ void read_separate_xml_files()
 }
 
 void attach_faces() {
-  for (auto circuit : model::circuits) {
-	for (auto pipe : circuit.pipes) {
+  for (auto& circuit : model::circuits) {
+	for (auto& pipe : circuit.pipes) {
       
-	  for (auto node : circuit.nodes) {
+	  for (auto& node : circuit.nodes) {
 	    if (pipe.unode_str == node.identifier) {
 		  pipe.unode = &node;
+		  break;
+	    }
+      }
+	  for (auto& node : circuit.nodes) {
+	    if (pipe.dnode_str == node.identifier) {
+		  pipe.dnode = &node;
 		  break;
 	    }
       }
@@ -75,11 +81,10 @@ void attach_faces() {
       }
      */
 
-      // pipe.unode->ofaces.push_back(&faces[0]);
-	  // std::cout << pipe.unode->identifier << std::endl;
+      pipe.unode->ofaces.push_back(&faces[0]);
       // unode.volume += 0.5 * delx * cfarea;
     
-      // pipe.dnode.ifaces.push_back(&faces[pipe.ncell-1]);
+      pipe.dnode->ifaces.push_back(&faces[pipe.ncell-1]);
       // dnode.volume += 0.5 * delx * cfarea;
 	}
   }

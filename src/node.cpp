@@ -1,3 +1,5 @@
+//! \file node.cpp
+
 #include "opensd/node.h"
 
 #include <iostream>

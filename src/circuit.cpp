@@ -1,3 +1,5 @@
+//! \file circuit.cpp
+
 #include "opensd/circuit.h"
 
 #include <iostream>

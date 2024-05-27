@@ -25,9 +25,12 @@ public:
   Node() = default;
   // virtual ~Node() = default;
   double mresidue;
-  double eqn_cont();
+  double msource;
   vector<PFace*> ifaces;
   vector<PFace*> ofaces;
+  double mflow_in;
+  double mflow_out;
+  double eqn_cont(double alpha_mom);
 };
 
 //==============================================================================

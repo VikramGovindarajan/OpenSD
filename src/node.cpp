@@ -6,6 +6,7 @@
 
 #include "opensd/error.h"
 #include "opensd/xml_interface.h"
+#include "opensd/face.h"
 
 namespace opensd {
 
@@ -25,42 +26,44 @@ Node::Node(pugi::xml_node flnode_node)
     fatal_error("Must specify identifier of flow node in geometry XML file.");
   }
   this->mresidue = 0.;
+  this->msource = 0.;
+  this->mflow_in = 1.E-4;
 }
 
-double Node::eqn_cont() {
+double Node::eqn_cont(double alpha_mom) {
   double isum_gues = 0.;
   double isum_old = 0.;
-  // std::cout << this->identifier << size(this->ofaces) << std::endl;
-  for (auto iface : this->ifaces) {
-    // std::cout << iface->vflow_gues << std::endl;
-    // isum_gues += 1000.* iface->vflow_gues; //iface.ther_gues.rhomass()
+  for (const auto& iface : this->ifaces) {
+    isum_gues += 1000.* iface->vflow_gues; //iface.ther_gues.rhomass()
     // isum_old += 1000. * iface->vflow_old; //iface.ther_old.rhomass()
   }
-/*
   double osum_gues = 0.;
   double osum_old = 0.;
-  for (const auto& oface : ofaces) {
-    osum_gues += oface.ther_gues.rhomass() * oface.vflow_gues;
-    osum_old += oface.ther_old.rhomass() * oface.vflow_old;
+  for (const auto& oface : this->ofaces) {
+    osum_gues += 1000. * oface->vflow_gues; //oface.ther_gues.rhomass()
+    // osum_old += oface.ther_old.rhomass() * oface.vflow_old;
   }
 
-  mflow_in = isum_gues;
-  mflow_out = osum_gues;
+  this->mflow_in = isum_gues;
+  this->mflow_out = osum_gues;
 
+/*
   double B, D;
   if (ther_old.phase() == 6) {
     B = B1 + volume * ther_old.first_two_phase_deriv(iDmass, iP, iHmass) / ther_old.rhomass();
     D = volume * ther_old.first_two_phase_deriv(iDmass, iHmass, iP);
   } else {
-    B = B1 + volume * ther_old.first_partial_deriv(iDmass, iP, iHmass) / ther_old.rhomass();
-    D = volume * ther_old.first_partial_deriv(iDmass, iHmass, iP);
-  }
+ */  
+    // B = B1 + volume * ther_old.first_partial_deriv(iDmass, iP, iHmass) / ther_old.rhomass();
+    // D = volume * ther_old.first_partial_deriv(iDmass, iHmass, iP);
+  // }
 
-  trans3 = trans_sim * ther_old.rhomass() * B * (spres_gues - spres_old) / delt;
-  trans4 = trans_sim * D * (senth_gues - senth_old) / delt;
+  double trans3 = 0.; //trans_sim * ther_old.rhomass() * B * (spres_gues - spres_old) / delt;
+  double trans4 = 0.; //trans_sim * D * (senth_gues - senth_old) / delt;
 
-  double y = (trans3 + trans4 + alpha_mom * (osum_gues - isum_gues) + (1. - alpha_mom) * (osum_old - isum_old) - msource);
- */  return 1;
+  double y = (trans3 + trans4 + alpha_mom * (osum_gues - isum_gues) + (1. - alpha_mom) * (osum_old - isum_old) - this->msource);
+  
+  return y;
 }
 
 } // namespace opensd

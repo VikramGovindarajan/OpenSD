@@ -41,7 +41,8 @@ public:
   double Gcr;
   double pcr;
   
-  // Face() = default;
+  Face(int faceno, Node* unode, double ufrac, Node* dnode, double dfrac);
+  Face() = default;
   virtual ~Face() = default;
   // virtual void assign_statevar();
 };
@@ -58,14 +59,15 @@ public:
   double fricopt;
   double fricfact_old;
   double opening;
-  // Circuit* circuit;
-
+  Circuit* circuit;
+  
   PFace(int faceno, Pipe pipe, Node* unode, double ufrac, Node* dnode, double dfrac, 
     double diameter, double cfarea, double delx, double delz, double fricopt, double roughness);
   PFace() = default;
   virtual ~PFace() = default;
 
   // virtual void assign_statevar();
+  double eqn_mom(double x, double time, double delt, double trans_sim, double alpha_mom);
 };
 
 

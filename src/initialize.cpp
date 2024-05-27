@@ -32,7 +32,7 @@ void read_separate_xml_files()
 void attach_faces() {
   for (auto& circuit : model::circuits) {
 	for (auto& pipe : circuit.pipes) {
-      
+      pipe.circuit = &circuit;
 	  for (auto& node : circuit.nodes) {
 	    if (pipe.unode_str == node.identifier) {
 		  pipe.unode = &node;

@@ -7,6 +7,7 @@
 #include "opensd/node.h"
 #include "opensd/pipe.h"
 #include "opensd/bc.h"
+#include "opensd/face.h"
 #include "opensd/vector.h"
 
 namespace opensd {
@@ -34,6 +35,7 @@ public:
   vector<Node> nodes;
   vector<Pipe> pipes;
   vector<BC> bcs;
+  vector<PFace*> faces;
 protected:
 
 };

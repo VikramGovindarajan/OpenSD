@@ -1,4 +1,4 @@
-#include "opensd/geometry_aux.h"
+#include "opensd/geometry.h"
 #include <pugixml.hpp>
 
 #include <iostream>

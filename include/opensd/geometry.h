@@ -1,4 +1,4 @@
-//! \file geometry_aux.h
+//! \file geometry.h
 //! Auxilary functions for geometry initialization and general data handling.
 
 #ifndef OPENSD_GEOMETRY_AUX_H

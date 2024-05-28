@@ -31,7 +31,7 @@ void read_settings_xml()
   using namespace settings;
   using namespace pugi;
   
-  std::string filename = settings::path_input + "settings.xml";
+  std::string filename = path_input + "settings.xml";
 /*   if (!file_exists(filename)) {
     if (run_mode != RunMode::PLOTTING) {
       fatal_error("Could not find any XML input files! In order to run OpenMC, "

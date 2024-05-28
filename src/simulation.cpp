@@ -15,10 +15,10 @@
 
 int opensd_run()
 {
-    using namespace opensd;
-	
-	std::clock_t start_time;
-    start_time = std::clock();
+  using namespace opensd;
+
+  std::clock_t start_time;
+  start_time = std::clock();
 
   // Ensure that a timestep isn't executed in the case that the maximum number of
   // time steps has already been run in a restart statepoint file

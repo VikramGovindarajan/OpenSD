@@ -16,6 +16,10 @@ namespace opensd {
 // Global variables
 //==============================================================================
 
+namespace model {
+extern vector<Circuit> circuits;
+} // namespace model
+
 class Circuit;
 
 //==============================================================================

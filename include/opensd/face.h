@@ -49,7 +49,7 @@ public:
 
 class PFace : public Face {
 public:
-  Pipe pipe;
+  Pipe& pipe;
   double diameter;
   double cfarea;
   double delx;
@@ -58,6 +58,7 @@ public:
   double Re;
   double fricopt;
   double fricfact_old;
+  double fricfact_gues;
   double opening;
   Circuit* circuit;
   

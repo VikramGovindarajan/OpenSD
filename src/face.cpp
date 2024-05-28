@@ -2,6 +2,7 @@
 #include "opensd/face.h"
 
 #include <iostream>
+// #include <cstdlib>
 
 #include "opensd/circuit.h"
 
@@ -39,13 +40,15 @@ PFace::PFace(int faceno, Pipe& pipe, Node* unode, double ufrac, Node* dnode, dou
   : Face(faceno, unode, ufrac, dnode, dfrac),
     circuit(pipe.circuit), pipe(pipe), diameter(diameter), cfarea(cfarea),
     delx(delx), delz(delz), roughness(roughness), Re(0.0), fricopt(fricopt),
-    fricfact_old(64.0), opening(1.0) {
-  circuit->faces.push_back(this);
+    fricfact_old(64.0), fricfact_gues(64.0), opening(1.0) {
+  circuit->faces.push_back(*this);
 }
 
 double PFace::eqn_mom(double x, double time, double delt, bool trans_sim, double alpha_mom) {
-/*   delp_fr = fricfact_gues * delx * ther_gues.rhomass() * x * std::abs(x) / (2. * diameter * cfarea * cfarea);
-  if (faceno == 0) {
+  // double delp_fr = this->fricfact_gues * this->delx * 1000. * x * std::abs(x) / (2. * this->diameter * this->cfarea * this->cfarea); //ther_gues.rhomass()
+  // std::cout << this->vflow_gues << std::endl;
+  // std::exit(0);
+/*  if (faceno == 0) {
     delp_fr += pipe.Kforward * ther_gues.rhomass() * x * std::abs(x) / (2. * cfarea * cfarea);
   }
   delp_gr = ther_gues.rhomass() * const.grav * delz;

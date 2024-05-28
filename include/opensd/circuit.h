@@ -39,7 +39,7 @@ public:
   vector<Node> nodes;
   vector<Pipe> pipes;
   vector<BC> bcs;
-  vector<PFace*> faces;
+  vector<PFace> faces;
 protected:
 
 };

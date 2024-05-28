@@ -3,6 +3,7 @@
 #include "opensd/circuit.h"
 
 #include <iostream>
+#include <cmath>
 
 #include "opensd/node.h"
 #include "opensd/pipe.h"
@@ -10,6 +11,7 @@
 #include "opensd/error.h"
 #include "opensd/vector.h"
 #include "opensd/xml_interface.h"
+#include "opensd/constants.h"
 
 namespace opensd {
 
@@ -88,8 +90,8 @@ void discretize_circuits() {
       }
       double ufrac;
       double dfrac;
-      double cfarea;
-      double delx;
+      double cfarea = PI*std::pow(pipe.diameter,2)/4.;
+      double delx = pipe.length/pipe.ncell;
       double delz;
       double roughness;
       double fricopt;

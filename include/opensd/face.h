@@ -61,13 +61,13 @@ public:
   double opening;
   Circuit* circuit;
   
-  PFace(int faceno, Pipe pipe, Node* unode, double ufrac, Node* dnode, double dfrac, 
+  PFace(int faceno, Pipe& pipe, Node* unode, double ufrac, Node* dnode, double dfrac, 
     double diameter, double cfarea, double delx, double delz, double fricopt, double roughness);
   PFace() = default;
   virtual ~PFace() = default;
 
   // virtual void assign_statevar();
-  double eqn_mom(double x, double time, double delt, double trans_sim, double alpha_mom);
+  double eqn_mom(double x, double time, double delt, bool trans_sim, double alpha_mom);
 };
 
 

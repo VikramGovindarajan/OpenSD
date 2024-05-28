@@ -17,8 +17,9 @@ namespace opensd {
 
 Face::Face(int faceno, Node* unode, double ufrac, Node* dnode, double dfrac)
     : faceno(faceno), unode(unode), ufrac(ufrac), dnode(dnode), dfrac(dfrac),
-      vflow_old{1.0E-8}, mflow(0.0), velocity(0.0), choked(false), presidue(0.0), Gcr(1.0E8), pcr(0.0),
-      heat_input_old(0.0), heat_input(0.0), heat_hslab_old{} {
+      vflow_old{1.0E-8}, vflow_gues{1.0E-8}, mflow(0.0), velocity(0.0), choked(false), 
+	  presidue(0.0), Gcr(1.0E8), pcr(0.0),heat_input_old(0.0), heat_input(0.0),
+	  heat_hslab_old{} {
   // if (ufrac != nullptr && typeid(*unode) == typeid(Reservoir)) {
     // uheight = ufrac * unode->height;
   // }
@@ -33,7 +34,7 @@ Face::Face(int faceno, Node* unode, double ufrac, Node* dnode, double dfrac)
 //==============================================================================
 
 
-PFace::PFace(int faceno, Pipe pipe, Node* unode, double ufrac, Node* dnode, double dfrac,
+PFace::PFace(int faceno, Pipe& pipe, Node* unode, double ufrac, Node* dnode, double dfrac,
             double diameter, double cfarea, double delx, double delz, double fricopt, double roughness)
   : Face(faceno, unode, ufrac, dnode, dfrac),
     circuit(pipe.circuit), pipe(pipe), diameter(diameter), cfarea(cfarea),
@@ -43,7 +44,7 @@ PFace::PFace(int faceno, Pipe pipe, Node* unode, double ufrac, Node* dnode, doub
   circuit->faces.push_back(this);
 }
 
-double PFace::eqn_mom(double x, double time, double delt, double trans_sim, double alpha_mom) {
+double PFace::eqn_mom(double x, double time, double delt, bool trans_sim, double alpha_mom) {
 /*   delp_fr = fricfact_gues * delx * ther_gues.rhomass() * x * std::abs(x) / (2. * diameter * cfarea * cfarea);
   if (faceno == 0) {
     delp_fr += pipe.Kforward * ther_gues.rhomass() * x * std::abs(x) / (2. * cfarea * cfarea);

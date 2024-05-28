@@ -32,7 +32,8 @@ public:
   Node* unode;
   Node* dnode;
   Circuit* circuit;
-
+  vector<PFace*> faces;
+  
 protected:
 
 };

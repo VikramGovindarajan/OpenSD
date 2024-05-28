@@ -8,6 +8,7 @@
 namespace opensd {
 
 constexpr double PI {3.141592653589793238462643383279502884L};
+constexpr double grav {9.81};
 
 enum class RunMode {
   UNSET, // default value, OpenSD throws error if left to this

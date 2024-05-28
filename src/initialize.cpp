@@ -16,6 +16,7 @@ int opensd_init(int argc, char* argv[])
   // if (!read_model_xml())
     read_separate_xml_files();
     discretize_circuits();
+    initialize_circuits();
     
   return 0;
 }

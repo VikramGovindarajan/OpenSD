@@ -5,6 +5,7 @@
 // #include <cstdlib>
 
 #include "opensd/circuit.h"
+#include "opensd/constants.h"
 
 namespace opensd {
 
@@ -45,29 +46,30 @@ PFace::PFace(int faceno, Pipe& pipe, Node* unode, double ufrac, Node* dnode, dou
 }
 
 double PFace::eqn_mom(double x, double time, double delt, bool trans_sim, double alpha_mom) {
-  // double delp_fr = this->fricfact_gues * this->delx * 1000. * x * std::abs(x) / (2. * this->diameter * this->cfarea * this->cfarea); //ther_gues.rhomass()
-  // std::cout << this->vflow_gues << std::endl;
-  // std::exit(0);
+  double delp_fr = this->fricfact_gues * this->delx * 1000. * x * std::abs(x) / (2. * this->diameter * this->cfarea * this->cfarea); //ther_gues.rhomass()
 /*  if (faceno == 0) {
     delp_fr += pipe.Kforward * ther_gues.rhomass() * x * std::abs(x) / (2. * cfarea * cfarea);
   }
-  delp_gr = ther_gues.rhomass() * const.grav * delz;
-
-  double Term_old = ((1. - alpha_mom) * ((downstream.tpres_old - upstream.tpres_old) 
-                    - vflow_old * vflow_old / (2. * cfarea * cfarea) * (downstream.rhomass_old - upstream.rhomass_old) 
-                    + ther_old.rhomass() * const.grav * delz
-                    + fricfact_old * delx * ther_old.rhomass() * vflow_old * std::abs(vflow_old) / (2. * diameter * cfarea * cfarea)));
+*/
+  double delp_gr = 1000. * grav * this->delz; //ther_gues.rhomass()
+  // double term_old = ((1. - alpha_mom) * ((downstream.tpres_old - upstream.tpres_old) 
+                    // - vflow_old * vflow_old / (2. * cfarea * cfarea) * (downstream.rhomass_old - upstream.rhomass_old) 
+                    // + ther_old.rhomass() * const.grav * delz
+                    // + fricfact_old * delx * ther_old.rhomass() * vflow_old * std::abs(vflow_old) / (2. * diameter * cfarea * cfarea)));
+  double term_old = 0.;
+/*
   if (faceno == 0) {
     Term_old += (1. - alpha_mom) * pipe.Kforward_old * ther_old.rhomass() * vflow_old * std::abs(vflow_old) / (2. * cfarea * cfarea);
   }
+*/
 
-  double y = (trans_sim * delx * ther_gues.rhomass() * (x - vflow_old) / (delt * cfarea) 
-            + alpha_mom * (downstream.tpres_gues - upstream.tpres_gues 
-                          - vflow_gues * vflow_gues / (2. * cfarea * cfarea) * (downstream.rhomass_gues - upstream.rhomass_gues) 
+  double y = (trans_sim * delx * 1000. * (x - vflow_old) / (delt * cfarea)  //ther_gues.rhomass()
+            + alpha_mom * (dnode->tpres_gues - unode->tpres_gues //downstream.tpres_gues - upstream.tpres_gues 
+                          - vflow_gues * vflow_gues / (2. * cfarea * cfarea) * 0. //(downstream.rhomass_gues - upstream.rhomass_gues) 
                           + delp_gr 
                           + delp_fr) 
-            + Term_old);
- */  return 1.;
+            + term_old);
+  return y;
 }
 
 

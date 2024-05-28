@@ -49,6 +49,7 @@ protected:
 //==============================================================================
 
 void read_circuits(pugi::xml_node node);
+void initialize_circuits();
 
 } // namespace opensd
 

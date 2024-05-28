@@ -92,38 +92,45 @@ void discretize_circuits() {
       double dfrac;
       double cfarea = PI*std::pow(pipe.diameter,2)/4.;
       double delx = pipe.length/pipe.ncell;
-      double delz;
+      double delz = 0.;
       double roughness;
       double fricopt;
 
-      vector<PFace> faces;
-	  
       for (int i = 0; i < pipe.ncell; ++i) {
         if (i == 0 && pipe.ncell == 1) {
-          faces.push_back(PFace(i, pipe, pipe.unode, ufrac, pipe.dnode, dfrac, pipe.diameter, cfarea, delx, delz, fricopt, roughness));
+          pipe.faces.push_back(new PFace(i, pipe, pipe.unode, ufrac, pipe.dnode, dfrac, pipe.diameter, cfarea, delx, delz, fricopt, roughness));
         } else if (i == 0) {
-          faces.push_back(PFace(i, pipe, pipe.unode, ufrac, nodes[0], -1, pipe.diameter, cfarea, delx, delz, fricopt, roughness));
+          pipe.faces.push_back(new PFace(i, pipe, pipe.unode, ufrac, nodes[0], -1, pipe.diameter, cfarea, delx, delz, fricopt, roughness));
         } else if (i == pipe.ncell-1) {
-          faces.push_back(PFace(i, pipe, nodes[pipe.ncell-2], -1, pipe.dnode, dfrac, pipe.diameter, cfarea, delx, delz, fricopt, roughness));
+          pipe.faces.push_back(new PFace(i, pipe, nodes[pipe.ncell-2], -1, pipe.dnode, dfrac, pipe.diameter, cfarea, delx, delz, fricopt, roughness));
         } else {
-          faces.push_back(PFace(i, pipe, nodes[i-1], -1, nodes[i], -1, pipe.diameter, cfarea, delx, delz, fricopt, roughness));
+          pipe.faces.push_back(new PFace(i, pipe, nodes[i-1], -1, nodes[i], -1, pipe.diameter, cfarea, delx, delz, fricopt, roughness));
         }
       }
-    
+
     /*   for (int i = 0; i < ncell-1; ++i) {
         nodes[i].ifaces.push_back(&faces[i]);
         nodes[i].ofaces.push_back(&faces[i+1]);
       }
      */
 
-      pipe.unode->ofaces.push_back(&faces[0]);
+      pipe.unode->ofaces.push_back(pipe.faces[0]);
       // unode.volume += 0.5 * delx * cfarea;
     
-      pipe.dnode->ifaces.push_back(&faces[pipe.ncell-1]);
+      pipe.dnode->ifaces.push_back(pipe.faces[pipe.ncell-1]);
       // dnode.volume += 0.5 * delx * cfarea;
 	}
   }
 }
 
+void initialize_circuits() {
+
+for (auto& circuit : model::circuits) {
+  for (auto& node : circuit.nodes) {
+    node.update_gues();
+  }
+}
+
+}
 
 } // namespace opensd

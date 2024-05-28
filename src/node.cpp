@@ -1,5 +1,4 @@
 //! \file node.cpp
-
 #include "opensd/node.h"
 
 #include <iostream>
@@ -25,27 +24,48 @@ Node::Node(pugi::xml_node flnode_node)
   } else {
     fatal_error("Must specify identifier of flow node in geometry XML file.");
   }
-  this->mresidue = 0.;
-  this->msource = 0.;
-  this->mflow_in = 1.E-4;
+  mresidue = 0.;
+  msource = 0.;
+  mflow_in = 1.E-4;
+  tpres_old = 0.0;
 }
+
+
+Node::Node(std::string identifier, double volume, double heat_input, double elevation, double tpres_old, double ttemp_old, double tenth_old) //Circuit* circuit, 
+  : identifier(identifier), volume(volume), heat_input(heat_input), elevation(elevation), tpres_old(tpres_old), ttemp_old(ttemp_old), tenth_old(tenth_old) {
+  // node_ind = circuit.size();
+  // if (tpres_old != 0.0)
+    // this->tpres_old = tpres_old;
+  // if (ttemp_old != 0.0)
+    // this->ttemp_old = ttemp_old;
+  // if (tenth_old != 0.0)
+    // this->tenth_old = tenth_old;
+
+  esource = 0.0;
+  mflow_in = 1.0E-4;
+  msource = 0.0;
+  hresidue = 0.0;
+  mresidue = 0.0;
+}
+
+
 
 double Node::eqn_cont(double alpha_mom) {
   double isum_gues = 0.;
   double isum_old = 0.;
-  for (const auto& iface : this->ifaces) {
+  for (const auto& iface : ifaces) {
     isum_gues += 1000.* iface->vflow_gues; //iface.ther_gues.rhomass()
     // isum_old += 1000. * iface->vflow_old; //iface.ther_old.rhomass()
   }
   double osum_gues = 0.;
   double osum_old = 0.;
-  for (const auto& oface : this->ofaces) {
+  for (const auto& oface : ofaces) {
     osum_gues += 1000. * oface->vflow_gues; //oface.ther_gues.rhomass()
     // osum_old += oface.ther_old.rhomass() * oface.vflow_old;
   }
 
-  this->mflow_in = isum_gues;
-  this->mflow_out = osum_gues;
+  mflow_in = isum_gues;
+  mflow_out = osum_gues;
 
 /*
   double B, D;
@@ -61,9 +81,18 @@ double Node::eqn_cont(double alpha_mom) {
   double trans3 = 0.; //trans_sim * ther_old.rhomass() * B * (spres_gues - spres_old) / delt;
   double trans4 = 0.; //trans_sim * D * (senth_gues - senth_old) / delt;
 
-  double y = (trans3 + trans4 + alpha_mom * (osum_gues - isum_gues) + (1. - alpha_mom) * (osum_old - isum_old) - this->msource);
+  double y = (trans3 + trans4 + alpha_mom * (osum_gues - isum_gues) + (1. - alpha_mom) * (osum_old - isum_old) - msource);
   
   return y;
+}
+
+void Node::update_gues() {
+  tpres_gues = tpres_old;
+  ttemp_gues = ttemp_old;
+  // spres_gues = spres_old;
+  // stemp_gues = stemp_old;
+  tenth_gues = tenth_old;
+  // senth_gues = senth_old;
 }
 
 } // namespace opensd

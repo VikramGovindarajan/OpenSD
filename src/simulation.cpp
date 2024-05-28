@@ -6,7 +6,7 @@
 
 #include "opensd/settings.h"
 #include "opensd/convergence.h"
-// #include "opensd/circuit.h"
+#include "opensd/flow_solver.h"
 
 //==============================================================================
 // C API functions
@@ -40,7 +40,7 @@ int opensd_run()
     for (int main_iter = 0; main_iter < settings::no_main_iter; ++main_iter) {
     
       for (int flow_iter = 0; flow_iter < settings::no_flow_iter; ++flow_iter) {
-
+        exec_massmom(simulation::current_time, simulation::delt, false, settings::alpha_mom, main_iter, flow_iter);
       }
     
       bool converged = check_conv(simulation::current_time, simulation::delt, false, settings::alpha_mom, "massmom");

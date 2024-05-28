@@ -27,7 +27,7 @@ endif()
 
 find_package_write_status(pugixml)
 if (NOT pugixml_FOUND)
-  add_subdirectory(vendor/pugixml)
+  add_subdirectory(externals/pugixml)
   set_target_properties(pugixml PROPERTIES CXX_STANDARD 14 CXX_EXTENSIONS OFF)
 endif()
 

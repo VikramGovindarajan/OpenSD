@@ -25,8 +25,7 @@ bool check_conv(double time, double delt, bool trans_sim, double alpha_mom, std:
     circuit.eps_p = 0.0;
     std::vector<double> e_mass;
     for (auto& face : circuit.faces) {
-	  // std::cout << "Debug: Before calling eqn_mom, vflow_gues = " << face->vflow_gues << std::endl;
-      // face->presidue = face->eqn_mom(face->vflow_gues, time, delt, trans_sim, alpha_mom);
+      face->presidue = face->eqn_mom(face->vflow_gues, time, delt, trans_sim, alpha_mom);
       // circuit.eps_p += std::abs(face.presidue) / face.tpres_gues;
       // face.mflow = face.vflow_gues * face.ther_gues.rhomass();
       // if (std::abs(face.mflow) > 1.0E-5) {

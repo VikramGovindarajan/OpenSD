@@ -1,3 +1,4 @@
+//! \file simulation.cpp
 #include "opensd/simulation.h"
 
 #include <iostream>
@@ -5,6 +6,7 @@
 
 #include "opensd/settings.h"
 #include "opensd/convergence.h"
+#include "opensd/circuit.h"
 
 //==============================================================================
 // C API functions
@@ -19,6 +21,9 @@ int opensd_run()
 
   std::clock_t start_time;
   start_time = std::clock();
+  for (auto& circuit : model::circuits) {
+    // std::cout << circuit.identifier << " " << circuit.faces.front()->vflow_gues << std::endl;
+  }
 
   // Ensure that a timestep isn't executed in the case that the maximum number of
   // time steps has already been run in a restart statepoint file

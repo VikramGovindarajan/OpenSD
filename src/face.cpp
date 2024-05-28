@@ -40,7 +40,6 @@ PFace::PFace(int faceno, Pipe& pipe, Node* unode, double ufrac, Node* dnode, dou
     circuit(pipe.circuit), pipe(pipe), diameter(diameter), cfarea(cfarea),
     delx(delx), delz(delz), roughness(roughness), Re(0.0), fricopt(fricopt),
     fricfact_old(64.0), opening(1.0) {
-  this->vflow_gues = 1.E-8;
   circuit->faces.push_back(this);
 }
 

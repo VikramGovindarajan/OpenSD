@@ -1,3 +1,4 @@
+//! \file initialize.cpp
 #include "opensd/initialize.h"
 
 #include <iostream>

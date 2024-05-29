@@ -38,6 +38,7 @@ file(GLOB SOURCES "src/*.cpp")
 add_executable(${EXENAME} ${SOURCES})
 
 target_include_directories(${EXENAME} PUBLIC include)
+target_include_directories(${EXENAME} PUBLIC externals/CoolProp/externals/Eigen)
 # target_link_libraries(${EXENAME} CoolProp)
 target_link_libraries(${EXENAME} pugixml)
 

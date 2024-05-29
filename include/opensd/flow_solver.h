@@ -2,7 +2,7 @@
 #define MASSMOM_H
 
 #include <vector>
-// #include <Eigen/Dense>
+#include <Eigen/Dense>
 // #include "CoolProp.h"
 
 namespace opensd {

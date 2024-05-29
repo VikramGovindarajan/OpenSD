@@ -33,6 +33,21 @@ public:
   Node* dnode;
   Circuit* circuit;
   vector<PFace*> faces;
+  double ufrac;
+  double dfrac;
+  int npar;
+  double qcrit;
+  double Kforward_old;
+  double Kforward;
+  double heat_input;
+  double mflow;
+  double cfarea1;
+
+  
+  Pipe(std::string identifier, Circuit* circuit, double diameter, double length, Node* unode, double ufrac, Node* dnode, double dfrac, double ficopt, double roughness, int ncell, double heat_input, double cfarea, int npar, double qcrit, double Kforward, int flowreg);
+  // void add_wall(double thk, std::string solname, std::string sollib, int restraint);
+  // void update_mflow();
+  
   
 protected:
 

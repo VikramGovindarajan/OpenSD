@@ -121,3 +121,30 @@ def check_type(name, value, expected_type, expected_iter_type=None, *, none_ok=F
                     msg = (f'Unable to set "{name}" to "{value}" since each '
                            f'item must be of type "{expected_iter_type.__name__}"')
                 raise TypeError(msg)
+
+def check_greater_than(name, value, minimum, equality=False):
+    """Ensure that an object's value is greater than a given value.
+
+    Parameters
+    ----------
+    name : str
+        Description of the value being checked
+    value : object
+        Object to check
+    minimum : object
+        Minimum value to check against
+    equality : bool, optional
+        Whether equality is allowed. Defaults to False.
+
+    """
+
+    if equality:
+        if value < minimum:
+            msg = (f'Unable to set "{name}" to "{value}" since it is less than '
+                   f'"{minimum}"')
+            raise ValueError(msg)
+    else:
+        if value <= minimum:
+            msg = (f'Unable to set "{name}" to "{value}" since it is less than '
+                   f'or equal to "{minimum}"')
+            raise ValueError(msg)

@@ -1,9 +1,12 @@
 from enum import Enum
 import numpy as np
+from numbers import Integral
 from pathlib import Path
 import lxml.etree as ET
-from opensd.checkvalue import PathLike
+
+import opensd.checkvalue as cv
 from ._xml import clean_indentation, reorder_attributes
+from opensd.checkvalue import PathLike
 
 class RunMode(Enum):
     STEADY = 'steady'
@@ -36,7 +39,7 @@ class Settings:
         
         self._run_mode = RunMode.STEADY
         self._tim_slot = [0.]
-        self._verbosity = None
+        self._verbosity = 0
 
         self._no_main_iter = 2500
 
@@ -62,6 +65,16 @@ class Settings:
         
         for key, value in kwargs.items():
             setattr(self, key, value)
+
+    @property
+    def no_main_iter(self) -> int:
+        return self._no_main_iter
+
+    @no_main_iter.setter
+    def no_main_iter(self, no_main_iter: int):
+        cv.check_type('no_main_iter', no_main_iter, Integral)
+        cv.check_greater_than('no_main_iter', no_main_iter, 0)
+        self._no_main_iter = no_main_iter
 
     def export_to_xml(self, path: PathLike = 'settings.xml'):
         """Export simulation settings to an XML file.
@@ -127,3 +140,18 @@ class Settings:
     def _create_flow_iter_subelement(self, root):
         elem = ET.SubElement(root, "no_flow_iter")
         elem.text = str(self._no_flow_iter)
+
+    def _no_main_iter_from_xml_element(self, root):
+        text = get_text(root, 'no_main_iter')
+        if text is not None:
+            self.no_main_iter = int(text)
+
+    @property
+    def verbosity(self) -> int:
+        return self._verbosity
+
+    @verbosity.setter
+    def verbosity(self, verbosity: int):
+        cv.check_type('verbosity', verbosity, Integral)
+        cv.check_greater_than('verbosity', verbosity, -1, True)
+        self._verbosity = verbosity

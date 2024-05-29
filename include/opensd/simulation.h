@@ -4,6 +4,8 @@
 #ifndef OPENSD_SIMULATION_H
 #define OPENSD_SIMULATION_H
 
+#include <tuple>
+
 namespace opensd {
 
 //==============================================================================

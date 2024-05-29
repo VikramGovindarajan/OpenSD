@@ -2,6 +2,7 @@
 #include "opensd/face.h"
 
 #include <iostream>
+#include <cmath>
 // #include <cstdlib>
 
 #include "opensd/circuit.h"
@@ -46,12 +47,14 @@ PFace::PFace(int faceno, Pipe& pipe, Node* unode, double ufrac, Node* dnode, dou
 }
 
 double PFace::eqn_mom(double x, double time, double delt, bool trans_sim, double alpha_mom) {
-  double delp_fr = this->fricfact_gues * this->delx * 1000. * x * std::abs(x) / (2. * this->diameter * this->cfarea * this->cfarea); //ther_gues.rhomass()
+  Re = 1000.*x*diameter/(cfarea*0.001);
+  fricfact_gues = 0.316/std::pow(Re,0.25);
+  double delp_fr = fricfact_gues * delx * 1000. * x * std::abs(x) / (2. * diameter * cfarea * cfarea); //ther_gues.rhomass()
 /*  if (faceno == 0) {
     delp_fr += pipe.Kforward * ther_gues.rhomass() * x * std::abs(x) / (2. * cfarea * cfarea);
   }
 */
-  double delp_gr = 1000. * grav * this->delz; //ther_gues.rhomass()
+  double delp_gr = 1000. * grav * delz; //ther_gues.rhomass()
   // double term_old = ((1. - alpha_mom) * ((downstream.tpres_old - upstream.tpres_old) 
                     // - vflow_old * vflow_old / (2. * cfarea * cfarea) * (downstream.rhomass_old - upstream.rhomass_old) 
                     // + ther_old.rhomass() * const.grav * delz
@@ -70,6 +73,77 @@ double PFace::eqn_mom(double x, double time, double delt, bool trans_sim, double
                           + delp_fr) 
             + term_old);
   return y;
+}
+
+
+void PFace::update_abcoef(double time, double delt, double trans_sim, double alpha_mom) {
+  if (!choked) {
+    double A = 0;
+    // if (dnode.ther_gues.phase() == 6) {
+      // A = pow(vflow_gues, 2) / (2 * pow(cfarea, 2)) * dnode.spres_gues / dnode.tpres_gues * dnode.ther_gues.first_two_phase_deriv(1, 2, 3); // replace iDmass, iP, iHmass with appropriate values
+    // } else {
+      // A = pow(vflow_gues, 2) / (2 * pow(cfarea, 2)) * dnode.spres_gues / dnode.tpres_gues * dnode.ther_gues.first_partial_deriv(1, 2, 3); // replace iDmass, iP, iHmass with appropriate values
+    // }
+
+    double dr = 0.;
+    dr = (trans_sim * 1000. * delx / (cfarea * delt) //dnode.ther_gues.rhomass()
+                 + alpha_mom * (2 * (fricfact_gues * delx / diameter) * 1000. * fabs(vflow_gues) / (2 * pow(cfarea, 2)) //dnode.ther_gues.rhomass()
+                                + 0.0 * 2.0 * vflow_gues * (1000. - 1000.) / (2 * pow(cfarea, 2)))); //unode.ther_gues.rhomass() - dnode.ther_gues.rhomass()
+
+    if (faceno == 0) {
+      dr += alpha_mom * 2.0 * pipe.Kforward * 1000. * fabs(vflow_gues) / (2 * pow(cfarea, 2)); //dnode.ther_gues.rhomass()
+    }
+
+    // aplus = ((alpha_mom * (1.0 - A * 0.0)
+              // + (spres_gues / tpres_gues * delx * 0.5 * dnode.ther_gues.drho_dp_consth() *
+                 // (trans_sim * (vflow_gues - vflow_old) / (cfarea * delt) + 0.0 * alpha_mom * 9.81 * delz / delx + alpha_mom * (fricfact_gues / diameter) * vflow_gues * fabs(vflow_gues) / (2 * pow(cfarea, 2)))))
+             // / dr);
+
+    // if (faceno == 0) {
+      // aplus += (spres_gues / tpres_gues * 0.5 * dnode.ther_gues.drho_dp_consth() *
+                // alpha_mom * pipe.Kforward * vflow_gues * fabs(vflow_gues) / (2 * pow(cfarea, 2))) / dr;
+    // }
+
+    // double B;
+    // if (unode.ther_gues.phase() == 6) {
+      // B = pow(vflow_gues, 2) / (2 * pow(cfarea, 2)) * unode.spres_gues / unode.tpres_gues * unode.ther_gues.first_two_phase_deriv(1, 2, 3); // replace iDmass, iP, iHmass with appropriate values
+    // } else {
+      // B = pow(vflow_gues, 2) / (2 * pow(cfarea, 2)) * unode.spres_gues / unode.tpres_gues * unode.ther_gues.first_partial_deriv(1, 2, 3); // replace iDmass, iP, iHmass with appropriate values
+    // }
+
+    // aminus = ((alpha_mom * (1.0 - B * 0.0)
+               // - (spres_gues / tpres_gues * delx * 0.5 * dnode.ther_gues.drho_dp_consth() *
+                  // (trans_sim * (vflow_gues - vflow_old) / (cfarea * delt) + 0.0 * alpha_mom * 9.81 * delz / delx + alpha_mom * fricfact_gues * vflow_gues * fabs(vflow_gues) / (2 * diameter * pow(cfarea, 2)))))
+              // / dr);
+
+    // if (faceno == 0) {
+      // aminus -= (spres_gues / tpres_gues * 0.5 * dnode.ther_gues.drho_dp_consth() *
+                 // alpha_mom * pipe.Kforward * vflow_gues * fabs(vflow_gues) / (2 * pow(cfarea, 2))) / dr;
+    // }
+
+    // bplus = bminus = spres_gues / tpres_gues * 0.5 * dnode.ther_gues.drho_dp_consth();
+
+    // if (aplus < 0.0 || aminus < 0.0) {
+      // if ((true && trans_sim) || (!trans_sim)) { // replace true with appropriate condition if `show_warn` is a variable
+        // std::cout << "warning. acoef negative." << pipe.identifier << faceno << aplus << aminus << unode.ther_gues.rhomass() << dnode.ther_gues.rhomass() << A << B << dr << vflow_gues << std::endl;
+      // }
+    // }
+
+    // if (bplus < 0) {
+      // std::cout << spres_gues << tpres_gues << dnode.ther_gues.drho_dp_consth() << std::endl;
+      // std::exit(EXIT_FAILURE);
+    // }
+  } else {
+/*     double delta = 0.1;
+    double y1 = Gcr / rhocr;
+    auto& flstate = circuit.flstate;
+    flstate.update(1, 1, 1 + delta); // replace HmassP_INPUTS, upstream.tenth_gues, upstream.tpres_gues with appropriate values
+    double Gcr2, pcr2, rhocr2;
+    std::tie(Gcr2, pcr2, rhocr2) = GcrHEM(flstate); // replace with appropriate function call
+    double y2 = Gcr2 / rhocr2;
+    aminus = (y2 - y1) / delta * 0.1;
+    bminus = (rhocr2 - rhocr) / delta * 0.1;
+ */  }
 }
 
 

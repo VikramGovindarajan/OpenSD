@@ -69,6 +69,8 @@ public:
 
   // virtual void assign_statevar();
   double eqn_mom(double x, double time, double delt, bool trans_sim, double alpha_mom);
+  void update_abcoef(double time, double delt, double trans_sim, double alpha_mom);
+  
 };
 
 

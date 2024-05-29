@@ -3,13 +3,15 @@
 #include "opensd/convergence.h"
 
 #include <iostream>
+#include <tuple>
 
 #include "opensd/initialize.h"
+#include "opensd/settings.h"
 
 namespace opensd {
     
-bool check_conv(double time, double delt, bool trans_sim, double alpha_mom, std::string opt) {
-  double eps_mtot = 0.0, eps_ptot = 0.0, eps_htot = 0.0, eps_ttot = 0.0;
+std::tuple<bool, std::tuple<double, double>> check_conv(double time, double delt, bool trans_sim, double alpha_mom, std::string opt) {
+  double eps_mtot = 1.0, eps_ptot = 1.0, eps_htot = 0.0, eps_ttot = 0.0;
 
   for (auto& circuit : model::circuits) {
     
@@ -46,13 +48,13 @@ bool check_conv(double time, double delt, bool trans_sim, double alpha_mom, std:
     }
   }
 
-  bool condition = false;
-  // tuple<double, double, double, double, double> ret_args(eps_mtot, eps_ptot, eps_htot, eps_ttot);
+  bool condition = (eps_ptot < settings::conv_crit_flow) && (eps_mtot < settings::conv_crit_flow);
+  std::tuple<double, double> ret_args = std::make_tuple(eps_mtot, eps_ptot);
 
   if (condition) {
-    return true;
+    return std::make_tuple(true, ret_args);
   } else {
-    return false;
+    return std::make_tuple(false, ret_args);
   }
 }
 

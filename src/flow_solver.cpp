@@ -14,6 +14,45 @@ namespace opensd {
 // Global variables
 //==============================================================================
 
+// Define the nonlinear function for the face's momentum equation
+struct FaceFunctor {
+  using Scalar = double;
+  using InputType = Eigen::VectorXd;
+  using ValueType = Eigen::VectorXd;
+  using JacobianType = Eigen::MatrixXd;
+  enum { InputsAtCompileTime = 1, ValuesAtCompileTime = 1 };  
+  
+  // Constructor to initialize with parameters
+  FaceFunctor(double time, double delt, bool trans_sim, double alpha_mom, PFace* face)
+    : time(time), delt(delt), trans_sim(trans_sim), alpha_mom(alpha_mom), face(face) {}
+
+  // Function to be solved: returns f(x)
+  int operator()(const Eigen::VectorXd &x, Eigen::VectorXd &fvec) const {
+    // Replace with the actual momentum equation
+    double vflow_gues = x(0);
+    fvec(0) = face->eqn_mom(vflow_gues,time,delt,trans_sim,alpha_mom);/* momentum equation involving vflow_gues and other parameters */;
+    return 0;
+  }
+
+/* 
+  // Optionally provide the Jacobian
+  int df(const Eigen::VectorXd &x, Eigen::MatrixXd &fjac) const {
+    // Derivative of the momentum equation with respect to vflow_gues
+    fjac(0, 0) = // derivative of momentum equation ;
+    return 0;
+  }
+
+ */
+  int inputs() const { return 1; }
+  int values() const { return 1; }
+
+private:
+  double time;
+  double delt;
+  bool trans_sim;
+  double alpha_mom;
+  PFace* face;
+};
 
 //==============================================================================
 // Non-member functions
@@ -23,7 +62,7 @@ void exec_massmom(double time, double delt, bool trans_sim, double alpha_mom, in
   
    for (auto& circuit : model::circuits) {
     // if (!trans_sim && !circuit.solveSS) continue;
-
+    // std::cout << circuit.identifier << std::endl;
     // for (auto& branch : circuit.branches) { // Guess flow rate calculation
     for (auto& pipe : circuit.pipes) { 
       // branch.choked = false;
@@ -52,7 +91,17 @@ void exec_massmom(double time, double delt, bool trans_sim, double alpha_mom, in
           // face.G = face.Gcr;
           // face.vflow_gues = face.G * face.cfarea * face.opening / face.ther_gues.rhomass();
         // } else {
-          // face.vflow_gues = fsolve(face.eqn_mom, face.vflow_gues, {time, delt, trans_sim, alpha_mom})[0];
+
+          Eigen::VectorXd x(1);
+          x(0) = face.vflow_gues;
+
+          FaceFunctor functor(time, delt, trans_sim, alpha_mom, &face);
+          Eigen::NumericalDiff<FaceFunctor> numDiff(functor);
+          Eigen::LevenbergMarquardt<Eigen::NumericalDiff<FaceFunctor>> lm(numDiff);
+
+          int info = lm.minimize(x);
+          face.vflow_gues = x(0);
+
           // if (face.opening == 0.0) continue;
           // if (branch.isolated && !trans_sim) {
             // face.vflow_gues = 0.0;
@@ -64,11 +113,12 @@ void exec_massmom(double time, double delt, bool trans_sim, double alpha_mom, in
               face.vflow_gues = 1.E-8;
             }
           }
+          // std::cout << face.vflow_gues << std::endl;
           // if (dynamic_cast<PFace*>(&face) != nullptr || dynamic_cast<or_comp::Orifice*>(&face) != nullptr) {
             // face.G = face.vflow_gues * face.ther_gues.rhomass() / (face.cfarea * face.opening);
           // }
         // }
-        // face.update_abcoef(time, delt, trans_sim, alpha_mom);
+        face.update_abcoef(time, delt, trans_sim, alpha_mom);
       }
     }
 

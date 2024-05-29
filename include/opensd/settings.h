@@ -27,7 +27,7 @@ extern double alpha_mom; //!< relaxation factor
 extern vector<double> tim_slot;
 extern int no_main_iter;
 extern int no_flow_iter;
-
+extern double conv_crit_flow;
 } // namespace settings
 
 //==============================================================================

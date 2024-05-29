@@ -31,6 +31,21 @@ Face::Face(int faceno, Node* unode, double ufrac, Node* dnode, double dfrac)
   // }
 }
 
+void Face::assign_statevar() {
+  tpres_old = 0.5 * (unode->tpres_old + dnode->tpres_old);
+  spres_old = 0.5 * (unode->spres_old + dnode->spres_old);
+  ttemp_old = 0.5 * (unode->ttemp_old + dnode->ttemp_old);
+  stemp_old = 0.5 * (unode->stemp_old + dnode->stemp_old);
+}
+
+void Face::update_gues() {
+  vflow_gues = vflow_old;
+  tpres_gues = tpres_old;
+  spres_gues = spres_old;
+  ttemp_gues = ttemp_old;
+  stemp_gues = stemp_old;
+}
+
 
 //==============================================================================
 // PFace implementation
@@ -94,7 +109,7 @@ void PFace::update_abcoef(double time, double delt, double trans_sim, double alp
       dr += alpha_mom * 2.0 * pipe.Kforward * 1000. * fabs(vflow_gues) / (2 * pow(cfarea, 2)); //dnode.ther_gues.rhomass()
     }
 
-    // aplus = ((alpha_mom * (1.0 - A * 0.0)
+    // double aplus = ((alpha_mom * (1.0 - A * 0.0)
               // + (spres_gues / tpres_gues * delx * 0.5 * dnode.ther_gues.drho_dp_consth() *
                  // (trans_sim * (vflow_gues - vflow_old) / (cfarea * delt) + 0.0 * alpha_mom * 9.81 * delz / delx + alpha_mom * (fricfact_gues / diameter) * vflow_gues * fabs(vflow_gues) / (2 * pow(cfarea, 2)))))
              // / dr);

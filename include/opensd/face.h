@@ -40,11 +40,21 @@ public:
   double presidue;
   double Gcr;
   double pcr;
+  double tpres_old;
+  double spres_old;
+  double ttemp_old;
+  double stemp_old;
+  double tpres_gues;
+  double spres_gues;
+  double ttemp_gues;
+  double stemp_gues;
   
   Face(int faceno, Node* unode, double ufrac, Node* dnode, double dfrac);
   Face() = default;
   virtual ~Face() = default;
-  // virtual void assign_statevar();
+  void assign_statevar();
+  void update_gues();
+
 };
 
 class PFace : public Face {

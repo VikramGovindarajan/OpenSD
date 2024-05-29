@@ -127,7 +127,14 @@ void initialize_circuits() {
 
 for (auto& circuit : model::circuits) {
   for (auto& node : circuit.nodes) {
+    node.assign_prop();
     node.update_gues();
+  }
+  for (auto& face : circuit.faces) {
+    face.assign_statevar();
+    // face.assign_prop(circuit.flag_tp,"Homogeneous");
+    face.update_gues();
+
   }
 }
 

@@ -2,7 +2,7 @@ cmake_minimum_required(VERSION 3.10)
 
 project(OpenSD)
 
-# set(COOLPROP_STATIC_LIBRARY true)
+set(COOLPROP_STATIC_LIBRARY true)
 SET(EXENAME opensd)
 
 
@@ -32,14 +32,14 @@ if (NOT pugixml_FOUND)
 endif()
 
 
-# add_subdirectory ("${CMAKE_SOURCE_DIR}/externals/CoolProp")
+add_subdirectory ("${CMAKE_SOURCE_DIR}/externals/CoolProp")
 
 file(GLOB SOURCES "src/*.cpp")
 add_executable(${EXENAME} ${SOURCES})
 
 target_include_directories(${EXENAME} PUBLIC include)
 target_include_directories(${EXENAME} PUBLIC externals/CoolProp/externals/Eigen)
-# target_link_libraries(${EXENAME} CoolProp)
+target_link_libraries(${EXENAME} CoolProp)
 target_link_libraries(${EXENAME} pugixml)
 
 # install(TARGETS ${EXENAME})

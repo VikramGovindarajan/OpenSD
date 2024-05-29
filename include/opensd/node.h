@@ -7,6 +7,8 @@
 
 // #include "opensd/circuit.h"
 #include "opensd/vector.h"
+#include "CoolProp.h"
+#include "AbstractState.h"
 
 namespace opensd {
 
@@ -22,7 +24,6 @@ class PFace;
 class Node {
 public:
   std::string identifier; //!< User-defined identifier
-  // virtual ~Node() = default;
   double mresidue;
   double msource;
   vector<PFace*> ifaces;
@@ -38,6 +39,13 @@ public:
   double tpres_gues;
   double ttemp_gues;
   double tenth_gues;
+
+  double spres_old;
+  double stemp_old;
+  double senth_old;
+  double spres_gues;
+  double stemp_gues;
+  double senth_gues;
   
   double heat_input;
   double elevation;
@@ -46,14 +54,21 @@ public:
   double esource;
   double hresidue;
   double volume;
-  
+  // CoolProp::AbstractState* ther_old;
+  // CoolProp::AbstractState* ther_gues;  
 
   explicit Node(pugi::xml_node flnode_node);
   Node(std::string identifier, double volume, double heat_input, double elevation, double tpres_old = 0.0, double ttemp_old = 0.0, double tenth_old = 0.0); //Circuit* circuit, 
   Node() = default;
+  // virtual ~Node() = default;
+  // ~Node() {
+  // delete ther_old;
+  // delete ther_gues;
+  // }
 
   double eqn_cont(double alpha_mom);
   void update_gues();
+  void assign_prop();
 };
 
 //==============================================================================

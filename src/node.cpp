@@ -29,9 +29,6 @@ Node::Node(pugi::xml_node flnode_node)
   mflow_in = 1.E-4;
   tpres_old = 0.0;
 
-  // shared_ptr<AbstractState> Water(AbstractState::factory("HEOS", "Water"));
-  // Water->update(PQ_INPUTS, 101325, 0);  // SI units  
-
 }
 
 
@@ -102,6 +99,8 @@ void Node::update_gues() {
 void Node::assign_prop() {
   // ther_old = CoolProp::AbstractState::factory("BICUBIC&HEOS", "water");
   // ther_gues = CoolProp::AbstractState::factory("BICUBIC&HEOS", "water");
+  shared_ptr<CoolProp::AbstractState> ther_gues(CoolProp::AbstractState::factory("BICUBIC&HEOS", "Water"));
+  shared_ptr<CoolProp::AbstractState> ther_old(CoolProp::AbstractState::factory("BICUBIC&HEOS", "Water"));
 }
 
 } // namespace opensd

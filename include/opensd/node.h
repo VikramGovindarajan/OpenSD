@@ -7,9 +7,9 @@
 
 // #include "opensd/circuit.h"
 #include "opensd/vector.h"
-#include "CoolProp.h"
-#include "AbstractState.h"
-#include "crossplatform_shared_ptr.h"
+// #include "CoolProp.h"
+// #include "AbstractState.h"
+// #include "crossplatform_shared_ptr.h"
 
 namespace opensd {
 
@@ -55,8 +55,8 @@ public:
   double esource;
   double hresidue;
   double volume;
-  shared_ptr<CoolProp::AbstractState> ther_old;
-  shared_ptr<CoolProp::AbstractState> ther_gues;
+  // CoolProp::AbstractState* ther_old;
+  // CoolProp::AbstractState* ther_gues;
 
   explicit Node(pugi::xml_node flnode_node);
   Node(std::string identifier, double volume, double heat_input, double elevation, double tpres_old = 0.0, double ttemp_old = 0.0, double tenth_old = 0.0); //Circuit* circuit, 

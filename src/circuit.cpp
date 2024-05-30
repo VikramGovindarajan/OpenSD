@@ -4,6 +4,7 @@
 
 #include <iostream>
 #include <cmath>
+#include <cstdlib>
 
 #include "opensd/node.h"
 #include "opensd/pipe.h"
@@ -128,7 +129,10 @@ void initialize_circuits() {
 for (auto& circuit : model::circuits) {
   for (auto& node : circuit.nodes) {
     node.assign_prop();
-    node.update_gues();
+    // node.update_gues();
+      // node.ther_gues->update(CoolProp::PQ_INPUTS, 101325., 0.);
+      // std::cout << node.ther_gues->T() << std::endl;
+      // std::exit(0);
   }
   for (auto& face : circuit.faces) {
     face.assign_statevar();

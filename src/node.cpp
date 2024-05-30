@@ -2,6 +2,7 @@
 #include "opensd/node.h"
 
 #include <iostream>
+#include <cstdlib>
 
 #include "opensd/error.h"
 #include "opensd/xml_interface.h"
@@ -94,13 +95,20 @@ void Node::update_gues() {
   stemp_gues = stemp_old;
   tenth_gues = tenth_old;
   senth_gues = senth_old;
+  // senth_gues = 125000.;
+  // spres_gues = 1.E5;
+  // ther_gues->update(CoolProp::HmassP_INPUTS,senth_gues,spres_gues);
+  // ther_gues->update(CoolProp::PQ_INPUTS, 101325., 0.);
+  // std::cout << ther_gues->T() << std::endl;
+  // std::exit(0);
 }
 
 void Node::assign_prop() {
-  // ther_old = CoolProp::AbstractState::factory("BICUBIC&HEOS", "water");
-  // ther_gues = CoolProp::AbstractState::factory("BICUBIC&HEOS", "water");
-  shared_ptr<CoolProp::AbstractState> ther_gues(CoolProp::AbstractState::factory("BICUBIC&HEOS", "Water"));
-  shared_ptr<CoolProp::AbstractState> ther_old(CoolProp::AbstractState::factory("BICUBIC&HEOS", "Water"));
+  // CoolProp::AbstractState* ther_gues(CoolProp::AbstractState::factory("BICUBIC&HEOS", "Water"));
+  // ther_gues->update(CoolProp::PQ_INPUTS, 101325., 0.);
+      // std::cout << "flag1" << ther_gues->T() << std::endl;
+      // std::exit(0);
+  // shared_ptr<CoolProp::AbstractState> ther_old(CoolProp::AbstractState::factory("BICUBIC&HEOS", "Water"));
 }
 
 } // namespace opensd

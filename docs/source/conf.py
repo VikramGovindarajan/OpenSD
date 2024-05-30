@@ -7,8 +7,7 @@
 # https://www.sphinx-doc.org/en/master/usage/configuration.html#project-information
 
 project = 'OpenSD'
-copyright = '2024, VikramG'
-author = 'VikramG'
+copyright = '2024, OpenSD contributors'
 release = '0.1.0'
 
 # -- General configuration ---------------------------------------------------

@@ -5,7 +5,7 @@ Contributing to OpenSD
 ======================
 The general steps for contributing are as follows:
 
-1. Fork the main opensd repository from `VikramGovindarajan/opensd`_. This will create a
+1. Fork the main opensd repository from `opensd-dev/opensd`_. This will create a
    repository with the same name under your personal account. As such, you can
    commit to it as you please without disrupting other developers.
 
@@ -22,7 +22,7 @@ The general steps for contributing are as follows:
    ensure that those changes are made on a different branch.
 
 4. Issue a pull request from GitHub and select the *develop* branch of
-   VikramGovindarajan/opensd`_/opensd as the target.
+   opensd-dev/opensd`_/opensd as the target.
 
    At a minimum, you should describe what the changes you've made are and why
    you are making them. If the changes are related to an outstanding issue, make
@@ -33,7 +33,7 @@ The general steps for contributing are as follows:
    request page itself.
 
 6. After the pull request has been thoroughly vetted, it is merged back into the
-   *develop* branch of VikramGovindarajan/opensd.
+   *develop* branch of opensd-dev/opensd.
 
 Working in "Development" Mode
 -----------------------------
@@ -53,4 +53,4 @@ immediately reflected in the installed version (that is, you don't need to keep
 reinstalling it). 
 
 .. _pip: https://pip.pypa.io/en/stable/
-.. _VikramGovindarajan/opensd: https://github.com/VikramGovindarajan/opensd
+.. _opensd-dev/opensd: https://github.com/opensd-dev/opensd

@@ -24,14 +24,14 @@ Building Source on Linux
 ------------------------
 
 All OpenSD source code is hosted on `GitHub
-<https://github.com/VikramGovindarajan/opensd>`_. If you have `git
+<https://github.com/opensd-dev/opensd>`_. If you have `git
 <https://git-scm.com>`_, a modern C++ compiler, and 
 `CMake <https://cmake.org>`_ installed, you can
 download and install OpenSD by entering the following commands in a terminal:
 
 .. code-block:: sh
 
-    git clone --recurse-submodules https://github.com/VikramGovindarajan/opensd.git
+    git clone --recurse-submodules https://github.com/opensd-dev/opensd.git
     cd opensd
     mkdir build && cd build
     cmake ..

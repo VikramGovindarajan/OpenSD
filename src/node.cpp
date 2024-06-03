@@ -22,6 +22,10 @@ Node::Node(pugi::xml_node flnode_node)
 {
   if (check_for_node(flnode_node, "identifier")) {
     identifier = get_node_value(flnode_node, "identifier");
+    tpres_old  = stod(get_node_value(flnode_node, "tpres_old"));
+    ttemp_old  = stod(get_node_value(flnode_node, "ttemp_old"));
+    tenth_old  = stod(get_node_value(flnode_node, "tenth_old"));
+    msource    = stod(get_node_value(flnode_node, "msource"));
   } else {
     fatal_error("Must specify identifier of flow node in geometry XML file.");
   }

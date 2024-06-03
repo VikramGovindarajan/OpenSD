@@ -47,6 +47,10 @@ class Node(object):
         subelement.set("identifier", self.identifier)
         if self.elevation != 0.:
             subelement.set("elevation", str(self.elevation))
+        subelement.set("tpres_old", str(self.tpres_old))
+        subelement.set("ttemp_old", str(self.ttemp_old))
+        subelement.set("tenth_old", str(self.tenth_old))
+        subelement.set("msource",   str(self.msource))
 
 class Reservoir(Node):
     def __init__(self,identifier,circuit,volume,heat_input,elevation,tpres_old,ttemp_old,tenth_old,geom):

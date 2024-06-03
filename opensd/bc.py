@@ -16,4 +16,4 @@ class BC(object):
         subelement.set("identifier", self.identifier)
         subelement.set("node",       self.node.identifier)
         subelement.set("var",        self.var)
-        subelement.set("val",       str(self.val))
+        subelement.set("val",        str(self.val))

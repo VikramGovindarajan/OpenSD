@@ -128,6 +128,7 @@ void initialize_circuits() {
 
 for (auto& circuit : model::circuits) {
   for (auto& node : circuit.nodes) {
+    node.assign_staticvar();
     node.assign_prop();
     node.update_gues();
   }

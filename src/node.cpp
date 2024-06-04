@@ -30,9 +30,7 @@ Node::Node(pugi::xml_node flnode_node)
     fatal_error("Must specify identifier of flow node in geometry XML file.");
   }
   mresidue = 0.;
-  msource = 0.;
   mflow_in = 1.E-4;
-  tpres_old = 0.0;
 
 }
 
@@ -99,9 +97,14 @@ void Node::update_gues() {
   stemp_gues = stemp_old;
   tenth_gues = tenth_old;
   senth_gues = senth_old;
-  senth_gues = 125000.;
-  spres_gues = 1.E5;
   ther_gues->update(CoolProp::HmassP_INPUTS,senth_gues,spres_gues);
+}
+
+void Node::assign_staticvar() {
+  spres_old = tpres_old;
+  stemp_old = ttemp_old;
+  senth_old = tenth_old;
+  velocity = 0.;
 }
 
 void Node::assign_prop() {

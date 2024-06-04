@@ -57,6 +57,7 @@ public:
   double volume;
   shared_ptr<CoolProp::AbstractState> ther_gues;
   shared_ptr<CoolProp::AbstractState> ther_old;
+  double velocity;
 
   explicit Node(pugi::xml_node flnode_node);
   Node(std::string identifier, double volume, double heat_input, double elevation, double tpres_old = 0.0, double ttemp_old = 0.0, double tenth_old = 0.0); //Circuit* circuit, 
@@ -69,6 +70,7 @@ public:
 
   double eqn_cont(double alpha_mom);
   void update_gues();
+  void assign_staticvar();
   void assign_prop();
 };
 

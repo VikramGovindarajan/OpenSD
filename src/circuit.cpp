@@ -134,7 +134,7 @@ for (auto& circuit : model::circuits) {
   }
   for (auto& face : circuit.faces) {
     face.assign_statevar();
-    // face.assign_prop(circuit.flag_tp,"Homogeneous");
+    face.assign_prop();
     face.update_gues();
 
   }

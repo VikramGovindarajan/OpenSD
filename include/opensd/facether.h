@@ -10,6 +10,8 @@
 #include "connection.h"
 
 namespace opensd {
+
+class Face;
     
 class FaceTher {
 private:
@@ -20,15 +22,18 @@ public:
   Node dnode;
   // Upstream uther;
   // Downstream dther;
-  Face face;
+  Face* face;
   bool flag_tp;
   double flowreg;
   // FlState flstate;
   
   // FaceTher(Upstream uther, Downstream dther, Face face, bool flag_tp, double flowreg, Upstream unode, Downstream dnode);
-  FaceTher(Face face, bool flag_tp, double flowreg, Node unode, Node dnode);
-  
+  FaceTher(Face* face);
+  FaceTher() = default;
+  // virtual ~FaceTher() = default;
+
   // void update(FlState* flstate=nullptr);
+  void update();
   // void update_sat(double p=nullptr);
   double rhomass();
   double cpmass();
@@ -39,6 +44,6 @@ public:
   double hmass();
 };
 
-#endif
-
 } //namespace opensd
+
+#endif

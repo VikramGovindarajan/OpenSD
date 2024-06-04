@@ -7,6 +7,7 @@
 
 #include "opensd/node.h"
 #include "opensd/pipe.h"
+#include "opensd/FaceTher.h"
 #include "opensd/vector.h"
 
 namespace opensd {
@@ -14,6 +15,7 @@ namespace opensd {
 //==============================================================================
 // Global variables
 //==============================================================================
+class FaceTher;
 
 //==============================================================================
 //! \class Face
@@ -48,12 +50,15 @@ public:
   double spres_gues;
   double ttemp_gues;
   double stemp_gues;
+  FaceTher *ther_gues;
+  FaceTher *ther_old;
   
   Face(int faceno, Node* unode, double ufrac, Node* dnode, double dfrac);
   Face() = default;
   virtual ~Face() = default;
   void assign_statevar();
   void update_gues();
+  void assign_prop();
 
 };
 

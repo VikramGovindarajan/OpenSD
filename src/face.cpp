@@ -44,8 +44,18 @@ void Face::update_gues() {
   spres_gues = spres_old;
   ttemp_gues = ttemp_old;
   stemp_gues = stemp_old;
+  // if self.choked:
+    // ther_gues.update(self.ther_old)
+  // else:
+    ther_gues->update();
+  // self.upstream.update_gues()
+  // self.downstream.update_gues()
 }
 
+void Face::assign_prop() {
+  ther_old = new FaceTher(this);
+  ther_gues = new FaceTher(this);
+}
 
 //==============================================================================
 // PFace implementation
@@ -110,12 +120,12 @@ void PFace::update_abcoef(double time, double delt, double trans_sim, double alp
     }
 
     // double aplus = ((alpha_mom * (1.0 - A * 0.0)
-              // + (spres_gues / tpres_gues * delx * 0.5 * dnode.ther_gues.drho_dp_consth() *
+              // + (spres_gues / tpres_gues * delx * 0.5 * ther_gues->drho_dp_consth() *
                  // (trans_sim * (vflow_gues - vflow_old) / (cfarea * delt) + 0.0 * alpha_mom * 9.81 * delz / delx + alpha_mom * (fricfact_gues / diameter) * vflow_gues * fabs(vflow_gues) / (2 * pow(cfarea, 2)))))
              // / dr);
 
     // if (faceno == 0) {
-      // aplus += (spres_gues / tpres_gues * 0.5 * dnode.ther_gues.drho_dp_consth() *
+      // aplus += (spres_gues / tpres_gues * 0.5 * ther_gues.drho_dp_consth() *
                 // alpha_mom * pipe.Kforward * vflow_gues * fabs(vflow_gues) / (2 * pow(cfarea, 2))) / dr;
     // }
 

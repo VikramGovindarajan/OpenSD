@@ -16,14 +16,13 @@ FaceTher::FaceTher(Face* face) :
     // face.upstream.update_gues();
     // face.downstream.update_gues();
 
-    // _drho_dp_consth = 0.5 * (face->unode->ther_gues->first_partial_deriv(iDmass,iP,iHmass)  
-                                                                   // + face->dnode->ther_gues->first_partial_deriv(iDmass,iP,iHmass));
-    // _rhomass        = 0.5 * (face->unode->ther_gues->rhomass()      + face->dnode->ther_gues->rhomass());
-    // _viscosity      = 0.5 * (face->unode->ther_gues->viscosity()    + face->dnode->ther_gues->viscosity());
-    _hmass          = 0.5 * (face->unode->tenth_gues               + face->dnode->tenth_gues);
-    // _cpmass         = 0.5 * (face->unode->ther_gues->cpmass()       + face->dnode->ther_gues->cpmass());
-    // _conductivity   = 0.5 * (face->unode->ther_gues->conductivity() + face->dnode->ther_gues->conductivity());
-
+    _drho_dp_consth = 0.5 * (face->upstream->drho_dp_consth + face->downstream->drho_dp_consth);
+    _rhomass        = 0.5 * (face->upstream->rhomass_gues   + face->downstream->rhomass_gues);
+    _viscosity      = 0.5 * (face->upstream->viscosity      + face->downstream->viscosity);
+    _hmass          = 0.5 * (face->upstream->tenth_gues     + face->downstream->tenth_gues);
+    _cpmass         = 0.5 * (face->upstream->cpmass         + face->downstream->cpmass);
+    _conductivity   = 0.5 * (face->upstream->conductivity   + face->downstream->conductivity);
+    
     // if (flag_tp) {
       // if (uther.Q() * dther.Q() < 0. && abs(face.heat_input) + abs(sum(face.heat_hslab)) > 0. && !(unode instanceof TPTank) && !(dnode instanceof TPTank)) {
         // update_sat();

@@ -6,12 +6,12 @@
 namespace opensd {
     
 class Connection {
-private:
+  
+public:
   Node node;
   double frac, height;
   double drho_dp_consth, tpres_gues, tenth_gues, rhomass_gues, viscosity, cpmass, conductivity;
-
-public:
+  double tpres_old, tenth_old, rhomass_old;
   Connection(Node node, double frac, double height);
   void update_gues();
   void update_old();

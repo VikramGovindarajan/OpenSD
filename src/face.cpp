@@ -3,7 +3,7 @@
 
 #include <iostream>
 #include <cmath>
-// #include <cstdlib>
+#include <cstdlib>
 
 #include "opensd/circuit.h"
 #include "opensd/constants.h"
@@ -53,8 +53,48 @@ void Face::update_gues() {
 }
 
 void Face::assign_prop() {
+  // if (dfrac != ufrac && dfrac != nullptr && ufrac != nullptr) {
+    // std::cerr << "face properties not defined. stopping " << pipe.identifier << " face" << faceno << std::endl;
+    // std::exit(EXIT_FAILURE);
+  // }
+
+  // ther_old = new FaceTher(unode->ther_old, dnode->ther_old, this, flag_tp, flowreg, unode, dnode);
+  // ther_gues = new FaceTher(unode->ther_gues, dnode->ther_gues, this, flag_tp, flowreg, unode, dnode);
   ther_old = new FaceTher(this);
   ther_gues = new FaceTher(this);
+
+
+  // if (circuit->fllib == "CoolProp") {
+    // ther_cr = CoolProp::AbstractState::factory("BICUBIC&HEOS", circuit->flname);
+  // } else if (circuit->fllib == "thiravam") {
+    // ther_cr = thiravam::state(circuit->flname);
+  // } else if (circuit->fllib == "User") {
+    // auto mod = __import__(circuit->flname);
+    // auto clas = getattr(mod, "fluid");
+    // ther_cr = clas();
+  // }
+
+  // if (dynamic_cast<Reservoir*>(unode) && ufrac != nullptr) {
+    // upstream = new Connection(unode, ufrac, uheight);
+  // } else {
+    upstream = new Connection(*unode, ufrac, 0);
+  // }
+  upstream->update_old();
+
+  // if (dynamic_cast<Reservoir*>(dnode) && dfrac != nullptr) {
+    // downstream = new Connection(dnode, dfrac, dheight);
+  // } else {
+    downstream = new Connection(*dnode, dfrac, 0);
+  // }
+  downstream->update_old();
+
+  // if (choked) {
+    // auto flstate = circuit->flstate;
+    // flstate.update(CoolProp::PSmass_INPUTS, spres_gues, s0);
+    // ther_old->update(flstate);
+  // } else {
+    ther_old->update();
+  // }
 }
 
 //==============================================================================

@@ -46,26 +46,27 @@ Connection::Connection(Node node, double frac, double height) : node(node), frac
   }
 }
 
+ */
 void Connection::update_old() {
-  if (node instanceof TPTank && frac != nullptr && node.ther_old.phase() == 6) {
-    if (height > node.level_old) {
-      tpres_old = node.tpres_old;
-      tenth_old = node.ther_old.hg;
-      rhomass_old = node.ther_old.rhog;
-    } else {
-      tpres_old = node.tpres_old + node.ther_old.rhof * const.grav * (node.level_old - height);
-      tenth_old = node.ther_old.hf;
-      rhomass_old = node.ther_old.rhof;
-    }
-  } else {
+  // if (node instanceof TPTank && frac != nullptr && node.ther_old.phase() == 6) {
+    // if (height > node.level_old) {
+      // tpres_old = node.tpres_old;
+      // tenth_old = node.ther_old.hg;
+      // rhomass_old = node.ther_old.rhog;
+    // } else {
+      // tpres_old = node.tpres_old + node.ther_old.rhof * const.grav * (node.level_old - height);
+      // tenth_old = node.ther_old.hf;
+      // rhomass_old = node.ther_old.rhof;
+    // }
+  // } else {
     tpres_old = node.tpres_old;
     tenth_old = node.tenth_old;
-    rhomass_old = node.ther_old.rhomass();
-  }
+    rhomass_old = node.ther_old->rhomass();
+  // }
 
-  if (node instanceof TPTank && frac != nullptr && node.ther_old.phase() == 0) {
-    tpres_old = tpres_old + node.ther_old.rhof * const.grav * (node.level_old - height);
-  }
+  // if (node instanceof TPTank && frac != nullptr && node.ther_old.phase() == 0) {
+    // tpres_old = tpres_old + node.ther_old.rhof * const.grav * (node.level_old - height);
+  // }
 }
- */
+
 } // namespace opensd

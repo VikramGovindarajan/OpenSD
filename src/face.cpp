@@ -108,12 +108,12 @@ PFace::PFace(int faceno, Pipe& pipe, Node* unode, double ufrac, Node* dnode, dou
     circuit(pipe.circuit), pipe(pipe), diameter(diameter), cfarea(cfarea),
     delx(delx), delz(delz), roughness(roughness), Re(0.0), fricopt(fricopt),
     fricfact_old(64.0), fricfact_gues(64.0), opening(1.0) {
-  circuit->faces.push_back(*this);
+  circuit->faces.push_back(std::make_shared<PFace>(*this));
 }
 
 double PFace::eqn_mom(double x, double time, double delt, bool trans_sim, double alpha_mom) {
   Re = 1000.*x*diameter/(cfarea*0.001);
-  fricfact_gues = 0.316/std::pow(Re,0.25);
+  // fricfact_gues = 0.316/std::pow(Re,0.25);
   double delp_fr = fricfact_gues * delx * 1000. * x * std::abs(x) / (2. * diameter * cfarea * cfarea); //ther_gues.rhomass()
 /*  if (faceno == 0) {
     delp_fr += pipe.Kforward * ther_gues.rhomass() * x * std::abs(x) / (2. * cfarea * cfarea);
@@ -158,6 +158,10 @@ void PFace::update_abcoef(double time, double delt, double trans_sim, double alp
     if (faceno == 0) {
       dr += alpha_mom * 2.0 * pipe.Kforward * 1000. * fabs(vflow_gues) / (2 * pow(cfarea, 2)); //dnode.ther_gues.rhomass()
     }
+    
+  std::cout << ther_gues->drho_dp_consth() << std::endl;
+  std::exit(0);
+    
 
     // double aplus = ((alpha_mom * (1.0 - A * 0.0)
               // + (spres_gues / tpres_gues * delx * 0.5 * ther_gues->drho_dp_consth() *
@@ -211,5 +215,15 @@ void PFace::update_abcoef(double time, double delt, double trans_sim, double alp
  */  }
 }
 
+// void PFace::update_old() {
+  // Face::update_old();
+  // fricfact_old = fricfact_gues;
+  // pipe->Kforward_old = pipe->Kforward;
+// }
+
+void PFace::update_gues() {
+  Face::update_gues();
+  fricfact_gues = fricfact_old;
+}
 
 } // namespace opensd

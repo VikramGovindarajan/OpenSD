@@ -68,9 +68,12 @@ public:
   Face() = default;
   virtual ~Face() = default;
   void assign_statevar();
-  void update_gues();
+  virtual void update_gues();
   void assign_prop();
 
+  virtual double eqn_mom(double x, double time, double delt, bool trans_sim, double alpha_mom) {return 0;}
+  virtual void update_abcoef(double time, double delt, double trans_sim, double alpha_mom) {}
+  
 };
 
 class PFace : public Face {
@@ -94,8 +97,12 @@ public:
   virtual ~PFace() = default;
 
   // virtual void assign_statevar();
-  double eqn_mom(double x, double time, double delt, bool trans_sim, double alpha_mom);
-  void update_abcoef(double time, double delt, double trans_sim, double alpha_mom);
+  double eqn_mom(double x, double time, double delt, bool trans_sim, double alpha_mom) override;
+  void update_abcoef(double time, double delt, double trans_sim, double alpha_mom) override;
+  
+
+  // void update_old() override;
+  void update_gues() override;
   
 };
 

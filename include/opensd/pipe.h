@@ -13,6 +13,7 @@ namespace opensd {
 // Global variables
 //==============================================================================
 class Circuit;
+class PFace;
 
 //==============================================================================
 //! \class Pipe
@@ -32,7 +33,7 @@ public:
   Node* unode;
   Node* dnode;
   Circuit* circuit;
-  vector<PFace*> faces;
+  vector<std::shared_ptr<PFace>> faces;
   double ufrac;
   double dfrac;
   int npar;

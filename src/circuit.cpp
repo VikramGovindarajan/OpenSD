@@ -99,13 +99,13 @@ void discretize_circuits() {
 
       for (int i = 0; i < pipe.ncell; ++i) {
         if (i == 0 && pipe.ncell == 1) {
-          pipe.faces.push_back(new PFace(i, pipe, pipe.unode, ufrac, pipe.dnode, dfrac, pipe.diameter, cfarea, delx, delz, fricopt, roughness));
+          pipe.faces.push_back(std::make_shared<PFace>(i, pipe, pipe.unode, ufrac, pipe.dnode, dfrac, pipe.diameter, cfarea, delx, delz, fricopt, roughness));
         } else if (i == 0) {
-          pipe.faces.push_back(new PFace(i, pipe, pipe.unode, ufrac, nodes[0], -1, pipe.diameter, cfarea, delx, delz, fricopt, roughness));
+          pipe.faces.push_back(std::make_shared<PFace>(i, pipe, pipe.unode, ufrac, nodes[0], -1, pipe.diameter, cfarea, delx, delz, fricopt, roughness));
         } else if (i == pipe.ncell-1) {
-          pipe.faces.push_back(new PFace(i, pipe, nodes[pipe.ncell-2], -1, pipe.dnode, dfrac, pipe.diameter, cfarea, delx, delz, fricopt, roughness));
+          pipe.faces.push_back(std::make_shared<PFace>(i, pipe, nodes[pipe.ncell-2], -1, pipe.dnode, dfrac, pipe.diameter, cfarea, delx, delz, fricopt, roughness));
         } else {
-          pipe.faces.push_back(new PFace(i, pipe, nodes[i-1], -1, nodes[i], -1, pipe.diameter, cfarea, delx, delz, fricopt, roughness));
+          pipe.faces.push_back(std::make_shared<PFace>(i, pipe, nodes[i-1], -1, nodes[i], -1, pipe.diameter, cfarea, delx, delz, fricopt, roughness));
         }
       }
 
@@ -115,10 +115,10 @@ void discretize_circuits() {
       }
      */
 
-      pipe.unode->ofaces.push_back(pipe.faces[0]);
+      pipe.unode->ofaces.push_back(std::make_shared<Face>(*pipe.faces[0]));
       // unode.volume += 0.5 * delx * cfarea;
     
-      pipe.dnode->ifaces.push_back(pipe.faces[pipe.ncell-1]);
+      pipe.dnode->ifaces.push_back(std::make_shared<Face>(*pipe.faces[pipe.ncell - 1]));
       // dnode.volume += 0.5 * delx * cfarea;
 	}
   }
@@ -133,9 +133,9 @@ for (auto& circuit : model::circuits) {
     node.update_gues();
   }
   for (auto& face : circuit.faces) {
-    face.assign_statevar();
-    face.assign_prop();
-    face.update_gues();
+    face->assign_statevar();
+    face->assign_prop();
+    face->update_gues();
 
   }
 }

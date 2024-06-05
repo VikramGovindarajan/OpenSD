@@ -17,7 +17,8 @@ namespace opensd {
 // Global variables
 //==============================================================================
 
-class PFace;
+class Face;
+
 //==============================================================================
 //! \class Node
 //==============================================================================
@@ -27,8 +28,8 @@ public:
   std::string identifier; //!< User-defined identifier
   double mresidue;
   double msource;
-  vector<PFace*> ifaces;
-  vector<PFace*> ofaces;
+  vector<std::shared_ptr<Face>> ifaces;
+  vector<std::shared_ptr<Face>> ofaces;
   double mflow_in;
   double mflow_out;
   // Circuit* circuit;

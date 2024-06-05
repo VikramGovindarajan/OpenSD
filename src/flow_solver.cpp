@@ -5,6 +5,7 @@
 // #include <cmath>
 #include <iostream>
 // #include <Eigen/Dense>
+#include <cstdlib>
 
 #include "opensd/circuit.h"
 
@@ -23,7 +24,7 @@ struct FaceFunctor {
   enum { InputsAtCompileTime = 1, ValuesAtCompileTime = 1 };  
   
   // Constructor to initialize with parameters
-  FaceFunctor(double time, double delt, bool trans_sim, double alpha_mom, PFace* face)
+  FaceFunctor(double time, double delt, bool trans_sim, double alpha_mom, std::shared_ptr<Face> face)
     : time(time), delt(delt), trans_sim(trans_sim), alpha_mom(alpha_mom), face(face) {}
 
   // Function to be solved: returns f(x)
@@ -51,7 +52,7 @@ private:
   double delt;
   bool trans_sim;
   double alpha_mom;
-  PFace* face;
+  std::shared_ptr<Face> face;
 };
 
 //==============================================================================
@@ -64,11 +65,9 @@ void exec_massmom(double time, double delt, bool trans_sim, double alpha_mom, in
     // if (!trans_sim && !circuit.solveSS) continue;
     // std::cout << circuit.identifier << std::endl;
     // for (auto& branch : circuit.branches) { // Guess flow rate calculation
-    for (auto& pipe : circuit.pipes) { 
+    for (auto& face : circuit.faces) { 
       // branch.choked = false;
       // for (auto face = branch.faces.rbegin(); face != branch.faces.rend(); ++face) { // Reverse iteration
-      for (auto& it : pipe.faces) { // Reverse iteration
-        auto& face = *it;
         // face.choked = false;
         // if (circuit.fllib == "CoolProp" && circuit.flname != "Air" && circuit.flname != "Nitrogen") {
           // face.update_Gcr();
@@ -93,24 +92,24 @@ void exec_massmom(double time, double delt, bool trans_sim, double alpha_mom, in
         // } else {
 
           Eigen::VectorXd x(1);
-          x(0) = face.vflow_gues;
+          x(0) = face->vflow_gues;
 
-          FaceFunctor functor(time, delt, trans_sim, alpha_mom, &face);
+          FaceFunctor functor(time, delt, trans_sim, alpha_mom, face);
           Eigen::NumericalDiff<FaceFunctor> numDiff(functor);
           Eigen::LevenbergMarquardt<Eigen::NumericalDiff<FaceFunctor>> lm(numDiff);
 
           int info = lm.minimize(x);
-          face.vflow_gues = x(0);
+          face->vflow_gues = x(0);
 
           // if (face.opening == 0.0) continue;
           // if (branch.isolated && !trans_sim) {
             // face.vflow_gues = 0.0;
             // continue;
           // }
-          if (std::abs(face.vflow_gues) < 1.E-8 && main_iter == 0) { // Tune the value 1.E-8 as needed
-            face.vflow_gues = 1.E-8 * std::copysign(1.0, face.vflow_gues);
-            if (face.vflow_gues == 0.0) {
-              face.vflow_gues = 1.E-8;
+          if (std::abs(face->vflow_gues) < 1.E-8 && main_iter == 0) { // Tune the value 1.E-8 as needed
+            face->vflow_gues = 1.E-8 * std::copysign(1.0, face->vflow_gues);
+            if (face->vflow_gues == 0.0) {
+              face->vflow_gues = 1.E-8;
             }
           }
           // std::cout << face.vflow_gues << std::endl;
@@ -118,8 +117,8 @@ void exec_massmom(double time, double delt, bool trans_sim, double alpha_mom, in
             // face.G = face.vflow_gues * face.ther_gues.rhomass() / (face.cfarea * face.opening);
           // }
         // }
-        face.update_abcoef(time, delt, trans_sim, alpha_mom);
-      }
+        face->update_abcoef(time, delt, trans_sim, alpha_mom);
+      
     }
 
 /*

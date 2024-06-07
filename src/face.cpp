@@ -48,8 +48,8 @@ void Face::update_gues() {
     // ther_gues.update(self.ther_old)
   // else:
     ther_gues->update();
-  // self.upstream.update_gues()
-  // self.downstream.update_gues()
+  upstream->update_gues();
+  downstream->update_gues();
 }
 
 void Face::assign_prop() {
@@ -113,7 +113,7 @@ PFace::PFace(int faceno, Pipe& pipe, Node* unode, double ufrac, Node* dnode, dou
 
 double PFace::eqn_mom(double x, double time, double delt, bool trans_sim, double alpha_mom) {
   Re = 1000.*x*diameter/(cfarea*0.001);
-  // fricfact_gues = 0.316/std::pow(Re,0.25);
+  fricfact_gues = std::min(0.316/std::pow(Re,0.25),64.);
   double delp_fr = fricfact_gues * delx * 1000. * x * std::abs(x) / (2. * diameter * cfarea * cfarea); //ther_gues.rhomass()
 /*  if (faceno == 0) {
     delp_fr += pipe.Kforward * ther_gues.rhomass() * x * std::abs(x) / (2. * cfarea * cfarea);
@@ -159,14 +159,14 @@ void PFace::update_abcoef(double time, double delt, double trans_sim, double alp
       dr += alpha_mom * 2.0 * pipe.Kforward * 1000. * fabs(vflow_gues) / (2 * pow(cfarea, 2)); //dnode.ther_gues.rhomass()
     }
     
-  std::cout << ther_gues->drho_dp_consth() << std::endl;
-  std::exit(0);
     
 
-    // double aplus = ((alpha_mom * (1.0 - A * 0.0)
-              // + (spres_gues / tpres_gues * delx * 0.5 * ther_gues->drho_dp_consth() *
-                 // (trans_sim * (vflow_gues - vflow_old) / (cfarea * delt) + 0.0 * alpha_mom * 9.81 * delz / delx + alpha_mom * (fricfact_gues / diameter) * vflow_gues * fabs(vflow_gues) / (2 * pow(cfarea, 2)))))
-             // / dr);
+    double aplus = ((alpha_mom * (1.0 - A * 0.0)
+              + (spres_gues / tpres_gues * delx * 0.5 * ther_gues->drho_dp_consth() *
+                 (trans_sim * (vflow_gues - vflow_old) / (cfarea * delt) + 0.0 * alpha_mom * 9.81 * delz / delx + alpha_mom * (fricfact_gues / diameter) * vflow_gues * fabs(vflow_gues) / (2 * pow(cfarea, 2)))))
+             / dr);
+  std::cout << aplus << std::endl;
+  std::exit(0);
 
     // if (faceno == 0) {
       // aplus += (spres_gues / tpres_gues * 0.5 * ther_gues.drho_dp_consth() *

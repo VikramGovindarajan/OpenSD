@@ -11,10 +11,9 @@ FaceTher::FaceTher(Face* face) :
 
  // void FaceTher::update(FlState* flstate) {
   void FaceTher::update() {
-     using namespace CoolProp;
   // if (flstate == nullptr) {
-    // face.upstream.update_gues();
-    // face.downstream.update_gues();
+    face->upstream->update_gues();
+    face->downstream->update_gues();
 
     _drho_dp_consth = 0.5 * (face->upstream->drho_dp_consth + face->downstream->drho_dp_consth);
     _rhomass        = 0.5 * (face->upstream->rhomass_gues   + face->downstream->rhomass_gues);

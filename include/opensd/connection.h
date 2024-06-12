@@ -8,11 +8,11 @@ namespace opensd {
 class Connection {
   
 public:
-  Node node;
+  std::shared_ptr<Node> node;
   double frac, height;
   double drho_dp_consth, tpres_gues, tenth_gues, rhomass_gues, viscosity, cpmass, conductivity;
   double tpres_old, tenth_old, rhomass_old;
-  Connection(Node node, double frac, double height);
+  Connection(std::shared_ptr<Node> node, double frac, double height);
   void update_gues();
   void update_old();
 };

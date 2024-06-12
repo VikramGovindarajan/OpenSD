@@ -26,10 +26,10 @@ class Connection;
 class Face {
 public:
   int faceno;
-  Node* unode;
+  std::shared_ptr<Node> unode;
   double ufrac;
   double uheight;
-  Node* dnode;
+  std::shared_ptr<Node> dnode;
   double dfrac;
   double dheight;
   double vflow_old;
@@ -64,7 +64,7 @@ public:
   double bminus;
   
   
-  Face(int faceno, Node* unode, double ufrac, Node* dnode, double dfrac);
+  Face(int faceno, std::shared_ptr<Node> unode, double ufrac, std::shared_ptr<Node> dnode, double dfrac);
   Face() = default;
   virtual ~Face() = default;
   void assign_statevar();
@@ -78,7 +78,7 @@ public:
 
 class PFace : public Face {
 public:
-  Pipe& pipe;
+  std::shared_ptr<Pipe> pipe;
   double diameter;
   double cfarea;
   double delx;
@@ -89,9 +89,9 @@ public:
   double fricfact_old;
   double fricfact_gues;
   double opening;
-  Circuit* circuit;
+  std::shared_ptr<Circuit> circuit;
   
-  PFace(int faceno, Pipe& pipe, Node* unode, double ufrac, Node* dnode, double dfrac, 
+  PFace(int faceno, std::shared_ptr<Pipe> pipe, std::shared_ptr<Node> unode, double ufrac, std::shared_ptr<Node> dnode, double dfrac, 
     double diameter, double cfarea, double delx, double delz, double fricopt, double roughness);
   PFace() = default;
   virtual ~PFace() = default;

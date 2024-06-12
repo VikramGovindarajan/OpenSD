@@ -30,22 +30,22 @@ public:
   Pipe() = default;
   // virtual ~Pipe() = default;
   int ncell;
-  Node* unode;
-  Node* dnode;
-  Circuit* circuit;
+  std::shared_ptr<Node> unode;
+  std::shared_ptr<Node> dnode;
+  std::shared_ptr<Circuit> circuit;
   vector<std::shared_ptr<PFace>> faces;
   double ufrac;
   double dfrac;
   int npar;
   double qcrit;
   double Kforward_old;
-  double Kforward;
+  double Kforward = 0.;
   double heat_input;
   double mflow;
   double cfarea1;
 
   
-  Pipe(std::string identifier, Circuit* circuit, double diameter, double length, Node* unode, double ufrac, Node* dnode, double dfrac, double ficopt, double roughness, int ncell, double heat_input, double cfarea, int npar, double qcrit, double Kforward, int flowreg);
+  Pipe(std::string identifier, std::shared_ptr<Circuit> circuit, double diameter, double length, std::shared_ptr<Node> unode, double ufrac, std::shared_ptr<Node> dnode, double dfrac, double ficopt, double roughness, int ncell, double heat_input, double cfarea, int npar, double qcrit, double Kforward, int flowreg);
   // void add_wall(double thk, std::string solname, std::string sollib, int restraint);
   // void update_mflow();
   

@@ -21,7 +21,7 @@ namespace opensd {
 //==============================================================================
 
 namespace model {
-vector<Circuit> circuits;
+vector<std::shared_ptr<Circuit>> circuits;
 } // namespace model
 
 //==============================================================================
@@ -41,11 +41,12 @@ Circuit::Circuit(pugi::xml_node cir_node)
   
   // Read the fluid nodes, pipes and bcs
   for (pugi::xml_node flnode_node : cir_node.children("node")) {
-    this->nodes.push_back(Node(flnode_node));
+    this->nodes.push_back(std::make_shared<Node>(flnode_node));
+    this->nodes.back()->node_ind = this->nodes.size() - 1;
   }
 
   for (pugi::xml_node pipe : cir_node.children("pipe")) {
-    this->pipes.push_back(Pipe(pipe));
+    this->pipes.push_back(std::make_shared<Pipe>(pipe));
   }
 
   for (pugi::xml_node bc : cir_node.children("bc")) {
@@ -60,30 +61,30 @@ void read_circuits(pugi::xml_node node)
 {
   // Count the number of nodes
   for (pugi::xml_node cir_node : node.children("circuit")) {
-    model::circuits.push_back(Circuit(cir_node));
+    model::circuits.push_back(std::make_shared<Circuit>(cir_node));
   }
 
 }
 
 void discretize_circuits() {
   for (auto& circuit : model::circuits) {
-	for (auto& pipe : circuit.pipes) {
-      pipe.circuit = &circuit;
-	  for (auto& node : circuit.nodes) {
-	    if (pipe.unode_str == node.identifier) {
-		  pipe.unode = &node;
+	for (auto& pipe : circuit->pipes) {
+      pipe->circuit = circuit;
+	  for (auto& node : circuit->nodes) {
+	    if (pipe->unode_str == node->identifier) {
+		  pipe->unode = node;
 		  break;
 	    }
       }
-	  for (auto& node : circuit.nodes) {
-	    if (pipe.dnode_str == node.identifier) {
-		  pipe.dnode = &node;
+	  for (auto& node : circuit->nodes) {
+	    if (pipe->dnode_str == node->identifier) {
+		  pipe->dnode = node;
 		  break;
 	    }
       }
 	  
-	  vector<Node*> nodes;
-      for (int i = 0; i < pipe.ncell-1; ++i) {
+	  vector<std::shared_ptr<Node>> nodes;
+      for (int i = 0; i < pipe->ncell-1; ++i) {
         // Node node = Node();
         // node->identifier = identifier + "_node" + std::to_string(i);
         // node->height = unode->height + (dnode->height - unode->height) * (i + 1) / ncell;
@@ -91,21 +92,21 @@ void discretize_circuits() {
       }
       double ufrac;
       double dfrac;
-      double cfarea = PI*std::pow(pipe.diameter,2)/4.;
-      double delx = pipe.length/pipe.ncell;
+      double cfarea = PI*std::pow(pipe->diameter,2)/4.;
+      double delx = pipe->length/pipe->ncell;
       double delz = 0.;
       double roughness;
       double fricopt;
 
-      for (int i = 0; i < pipe.ncell; ++i) {
-        if (i == 0 && pipe.ncell == 1) {
-          pipe.faces.push_back(std::make_shared<PFace>(i, pipe, pipe.unode, ufrac, pipe.dnode, dfrac, pipe.diameter, cfarea, delx, delz, fricopt, roughness));
+      for (int i = 0; i < pipe->ncell; ++i) {
+        if (i == 0 && pipe->ncell == 1) {
+          pipe->faces.push_back(std::make_shared<PFace>(i, pipe, pipe->unode, ufrac, pipe->dnode, dfrac, pipe->diameter, cfarea, delx, delz, fricopt, roughness));
         } else if (i == 0) {
-          pipe.faces.push_back(std::make_shared<PFace>(i, pipe, pipe.unode, ufrac, nodes[0], -1, pipe.diameter, cfarea, delx, delz, fricopt, roughness));
-        } else if (i == pipe.ncell-1) {
-          pipe.faces.push_back(std::make_shared<PFace>(i, pipe, nodes[pipe.ncell-2], -1, pipe.dnode, dfrac, pipe.diameter, cfarea, delx, delz, fricopt, roughness));
+          pipe->faces.push_back(std::make_shared<PFace>(i, pipe, pipe->unode, ufrac, nodes[0], -1, pipe->diameter, cfarea, delx, delz, fricopt, roughness));
+        } else if (i == pipe->ncell-1) {
+          pipe->faces.push_back(std::make_shared<PFace>(i, pipe, nodes[pipe->ncell-2], -1, pipe->dnode, dfrac, pipe->diameter, cfarea, delx, delz, fricopt, roughness));
         } else {
-          pipe.faces.push_back(std::make_shared<PFace>(i, pipe, nodes[i-1], -1, nodes[i], -1, pipe.diameter, cfarea, delx, delz, fricopt, roughness));
+          pipe->faces.push_back(std::make_shared<PFace>(i, pipe, nodes[i-1], -1, nodes[i], -1, pipe->diameter, cfarea, delx, delz, fricopt, roughness));
         }
       }
 
@@ -115,11 +116,11 @@ void discretize_circuits() {
       }
      */
 
-      pipe.unode->ofaces.push_back(std::make_shared<Face>(*pipe.faces[0]));
-      // unode.volume += 0.5 * delx * cfarea;
+      pipe->unode->ofaces.push_back(pipe->faces[0]);
+      pipe->unode->volume += 0.5 * delx * cfarea;
     
-      pipe.dnode->ifaces.push_back(std::make_shared<Face>(*pipe.faces[pipe.ncell - 1]));
-      // dnode.volume += 0.5 * delx * cfarea;
+      pipe->dnode->ifaces.push_back(pipe->faces[pipe->ncell-1]);
+      pipe->dnode->volume += 0.5 * delx * cfarea;
 	}
   }
 }
@@ -127,12 +128,12 @@ void discretize_circuits() {
 void initialize_circuits() {
 
 for (auto& circuit : model::circuits) {
-  for (auto& node : circuit.nodes) {
-    node.assign_staticvar();
-    node.assign_prop();
-    node.update_gues();
+  for (auto& node : circuit->nodes) {
+    node->assign_staticvar();
+    node->assign_prop();
+    node->update_gues();
   }
-  for (auto& face : circuit.faces) {
+  for (auto& face : circuit->faces) {
     face->assign_statevar();
     face->assign_prop();
     face->update_gues();

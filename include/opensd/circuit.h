@@ -17,7 +17,7 @@ namespace opensd {
 //==============================================================================
 
 namespace model {
-extern vector<Circuit> circuits;
+extern vector<std::shared_ptr<Circuit>> circuits;
 } // namespace model
 
 class Circuit;
@@ -36,8 +36,8 @@ public:
   double mean_flow;
   double eps_h;
   double eps_p;
-  vector<Node> nodes;
-  vector<Pipe> pipes;
+  vector<std::shared_ptr<Node>> nodes;
+  vector<std::shared_ptr<Pipe>> pipes;
   vector<BC> bcs;
   vector<std::shared_ptr<Face>> faces;
 protected:

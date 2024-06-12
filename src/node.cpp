@@ -31,7 +31,7 @@ Node::Node(pugi::xml_node flnode_node)
   }
   mresidue = 0.;
   mflow_in = 1.E-4;
-
+  volume = 0.;
 }
 
 

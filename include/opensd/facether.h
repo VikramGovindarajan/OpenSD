@@ -18,8 +18,8 @@ private:
   double _Qth = -1000.;
   double _rhomass, _cpmass, _viscosity, _conductivity, _hmass, _drho_dp_consth;
 public:
-  Node unode;
-  Node dnode;
+  // Node unode;
+  // Node dnode;
   // Upstream uther;
   // Downstream dther;
   Face* face;

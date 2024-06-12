@@ -62,14 +62,14 @@ private:
 void exec_massmom(double time, double delt, bool trans_sim, double alpha_mom, int main_iter, int flow_iter) {
   
    for (auto& circuit : model::circuits) {
-    // if (!trans_sim && !circuit.solveSS) continue;
-    // std::cout << circuit.identifier << std::endl;
-    // for (auto& branch : circuit.branches) { // Guess flow rate calculation
-    for (auto& face : circuit.faces) { 
+    // if (!trans_sim && !circuit->solveSS) continue;
+    // std::cout << circuit->identifier << std::endl;
+    // for (auto& branch : circuit->branches) { // Guess flow rate calculation
+    for (auto& face : circuit->faces) {
       // branch.choked = false;
       // for (auto face = branch.faces.rbegin(); face != branch.faces.rend(); ++face) { // Reverse iteration
         // face.choked = false;
-        // if (circuit.fllib == "CoolProp" && circuit.flname != "Air" && circuit.flname != "Nitrogen") {
+        // if (circuit->fllib == "CoolProp" && circuit->flname != "Air" && circuit->flname != "Nitrogen") {
           // face.update_Gcr();
         // }
         // if (!branch.choked && face.dnode->spres_gues < face.pcr && dynamic_cast<turbo_comp::Turbine*>(&face) == nullptr) {
@@ -121,59 +121,63 @@ void exec_massmom(double time, double delt, bool trans_sim, double alpha_mom, in
       
     }
 
-/*
+
     // Pressure corrections
-    int n = circuit.nodes.size();
+    int n = circuit->nodes.size();
     Eigen::MatrixXd A = Eigen::MatrixXd::Zero(n, n);
     Eigen::VectorXd b = Eigen::VectorXd::Zero(n);
     for (int i = 0; i < n; ++i) {
-      auto& node = circuit.nodes[i];
-      if (node.flowreg == "Slug") continue;
+      auto& node = circuit->nodes[i];
+      // if (node.flowreg == "Slug") continue;
       double B, D;
-      if (node.ther_old.phase() == 6) {
-        B = node.B1 + node.volume * node.ther_old.first_two_phase_deriv(CoolProp::iDmass, CoolProp::iP, CoolProp::iHmass) / node.ther_old.rhomass();
-        A(i, i) = trans_sim * B * node.ther_old.rhomass() / delt;
-        D = trans_sim * node.volume * node.ther_old.first_two_phase_deriv(CoolProp::iDmass, CoolProp::iHmass, CoolProp::iP);
-      } else {
-        B = node.B1 + node.volume * node.ther_old.first_partial_deriv(CoolProp::iDmass, CoolProp::iP, CoolProp::iHmass) / node.ther_old.rhomass();
-        A(i, i) = trans_sim * B * node.ther_old.rhomass() / delt;
-        D = trans_sim * node.volume * node.ther_old.first_partial_deriv(CoolProp::iDmass, CoolProp::iHmass, CoolProp::iP);
-      }
-      b(i) = -trans_sim * B * node.ther_old.rhomass() / delt * (node.tpres_gues - node.ther_gues.rhomass() * std::pow(node.velocity, 2) / 2.0 - node.spres_old)
-           - trans_sim * D * (node.senth_gues - node.senth_old) / delt;
+      // if (node.ther_old.phase() == 6) {
+        // B = node.B1 + node.volume * node.ther_old.first_two_phase_deriv(CoolProp::iDmass, CoolProp::iP, CoolProp::iHmass) / node.ther_old.rhomass();
+        // A(i, i) = trans_sim * B * node.ther_old.rhomass() / delt;
+        // D = trans_sim * node.volume * node.ther_old.first_two_phase_deriv(CoolProp::iDmass, CoolProp::iHmass, CoolProp::iP);
+      // } else {
+        // B = node.B1 + node.volume * node.ther_old.first_partial_deriv(CoolProp::iDmass, CoolProp::iP, CoolProp::iHmass) / node.ther_old.rhomass();
+        B = node->volume * node->ther_old->first_partial_deriv(CoolProp::iDmass, CoolProp::iP, CoolProp::iHmass) / node->ther_old->rhomass();
+        A(i, i) = trans_sim * B * node->ther_old->rhomass() / delt;
+        D = trans_sim * node->volume * node->ther_old->first_partial_deriv(CoolProp::iDmass, CoolProp::iHmass, CoolProp::iP);
+      // }
+      b(i) = -trans_sim * B * node->ther_old->rhomass() / delt * (node->tpres_gues - node->ther_gues->rhomass() * std::pow(node->velocity, 2) / 2.0 - node->spres_old)
+           - trans_sim * D * (node->senth_gues - node->senth_old) / delt;
 
-      for (auto& iface : node.ifaces) {
-        A(i, iface->unode->node_ind) = -alpha_mom * (iface->aminus * iface->ther_gues.rhomass() + iface->bminus * iface->vflow_gues);
-        A(i, i) -= alpha_mom * (-iface->aplus * iface->ther_gues.rhomass() + iface->bplus * iface->vflow_gues);
-        b(i) += alpha_mom * (iface->ther_gues.rhomass() * iface->vflow_gues) + (1.0 - alpha_mom) * (iface->ther_old.rhomass() * iface->vflow_old);
-        if (A(i, iface->unode->node_ind) > 0.0) {
-          if ((show_warn && trans_sim) || !trans_sim) {
-            std::cout << "Warning: upstream coef negative. " << node.identifier << std::endl;
-          }
-        }
+      for (auto& iface : node->ifaces) {
+        // A(i, iface->unode->node_ind) = -alpha_mom * (iface->aminus * iface->ther_gues->rhomass() + iface->bminus * iface->vflow_gues);
+        std::cout << node->identifier << " " << iface->aminus << std::endl;
+        // std::cout << node.identifier << " " << iface->aminus << " " << iface->ther_gues->rhomass() << " " << iface->bminus << " " << iface->vflow_gues << std::endl;
+        // A(i, i) -= alpha_mom * (-iface->aplus * iface->ther_gues.rhomass() + iface->bplus * iface->vflow_gues);
+        // b(i) += alpha_mom * (iface->ther_gues.rhomass() * iface->vflow_gues) + (1.0 - alpha_mom) * (iface->ther_old.rhomass() * iface->vflow_old);
+        // if (A(i, iface->unode->node_ind) > 0.0) {
+          // if ((show_warn && trans_sim) || !trans_sim) {
+            // std::cout << "Warning: upstream coef negative. " << node.identifier << std::endl;
+          // }
+        // }
       }
-      for (auto& oface : node.ofaces) {
-        A(i, oface->dnode->node_ind) = -alpha_mom * (oface->aplus * oface->ther_gues.rhomass() - oface->bplus * oface->vflow_gues);
-        A(i, i) += alpha_mom * (oface->aminus * oface->ther_gues.rhomass() + oface->bminus * oface->vflow_gues);
-        b(i) -= alpha_mom * (oface->ther_gues.rhomass() * oface->vflow_gues) - (1.0 - alpha_mom) * (oface->ther_old.rhomass() * oface->vflow_old);
-        if (A(i, oface->dnode->node_ind) > 1.E-6) { // Pending check if 0
-          if ((show_warn && trans_sim) || !trans_sim) {
-            std::cout << "Warning: downstream coef negative. " << node.identifier << " " << oface->dnode->identifier << " " << A(i, oface->dnode->node_ind) << std::endl;
-          }
-        }
-      }
+      // for (auto& oface : node.ofaces) {
+        // A(i, oface->dnode->node_ind) = -alpha_mom * (oface->aplus * oface->ther_gues.rhomass() - oface->bplus * oface->vflow_gues);
+        // A(i, i) += alpha_mom * (oface->aminus * oface->ther_gues.rhomass() + oface->bminus * oface->vflow_gues);
+        // b(i) -= alpha_mom * (oface->ther_gues.rhomass() * oface->vflow_gues) - (1.0 - alpha_mom) * (oface->ther_old.rhomass() * oface->vflow_old);
+        // if (A(i, oface->dnode->node_ind) > 1.E-6) { // Pending check if 0
+          // if ((show_warn && trans_sim) || !trans_sim) {
+            // std::cout << "Warning: downstream coef negative. " << node.identifier << " " << oface->dnode->identifier << " " << A(i, oface->dnode->node_ind) << std::endl;
+          // }
+        // }
+      // }
 
-      if (node.fixed_var.count("P") > 0 && dynamic_cast<cont::Reservoir*>(&node) == nullptr) {
-        node.msource = -b(i);
-      }
-      if (A(i, i) < -1.E-6) { // Pending check if 0
-        if ((show_warn && trans_sim) || !trans_sim) {
-          std::cout << "Warning: negative A coef. " << node.identifier << " " << A(i, i) << std::endl;
-        }
-      }
+      // if (node.fixed_var.count("P") > 0 && dynamic_cast<cont::Reservoir*>(&node) == nullptr) {
+        // node.msource = -b(i);
+      // }
+      // if (A(i, i) < -1.E-6) { // Pending check if 0
+        // if ((show_warn && trans_sim) || !trans_sim) {
+          // std::cout << "Warning: negative A coef. " << node.identifier << " " << A(i, i) << std::endl;
+        // }
+      // }
     }
+    std::exit(0);
 
-    for (int i = 0; i < n; ++i) {
+/*     for (int i = 0; i < n; ++i) {
       auto& node = circuit.nodes[i];
       if (node.fixed_var.count("msource") > 0) {
         b(i) += node.msource;
@@ -249,6 +253,7 @@ void exec_massmom(double time, double delt, bool trans_sim, double alpha_mom, in
       }
     }
  */
+
   }
 }
 

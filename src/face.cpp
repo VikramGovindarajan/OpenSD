@@ -108,7 +108,6 @@ PFace::PFace(int faceno, std::shared_ptr<Pipe> pipe, std::shared_ptr<Node> unode
     circuit(pipe->circuit), pipe(pipe), diameter(diameter), cfarea(cfarea),
     delx(delx), delz(delz), roughness(roughness), Re(0.0), fricopt(fricopt),
     fricfact_old(64.0), fricfact_gues(64.0), opening(1.0) {
-  circuit->faces.push_back(std::make_shared<PFace>(*this));
 }
 
 double PFace::eqn_mom(double x, double time, double delt, bool trans_sim, double alpha_mom) {
@@ -156,10 +155,8 @@ void PFace::update_abcoef(double time, double delt, double trans_sim, double alp
                                 + 0.0 * 2.0 * vflow_gues * (unode->ther_gues->rhomass() - dnode->ther_gues->rhomass()) / (2 * pow(cfarea, 2))));
 
     if (faceno == 0) {
-      dr += alpha_mom * 2.0 * pipe.Kforward * 1000. * fabs(vflow_gues) / (2 * pow(cfarea, 2)); //dnode.ther_gues.rhomass()
+      dr += alpha_mom * 2.0 * pipe->Kforward * ther_gues->rhomass() * fabs(vflow_gues) / (2 * pow(cfarea, 2));
     }
-    
-    
 
     aplus = ((alpha_mom * (1.0 - A * 0.0)
               + (spres_gues / tpres_gues * delx * 0.5 * ther_gues->drho_dp_consth() *

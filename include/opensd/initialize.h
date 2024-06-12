@@ -16,7 +16,7 @@ void read_separate_xml_files();
 //! Write some output that occurs right after initialization
 // void initial_output();
 
-void discretize_circuits();
+void discretize_pipes();
 
 } // namespace opensd
 

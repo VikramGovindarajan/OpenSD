@@ -66,7 +66,7 @@ void read_circuits(pugi::xml_node node)
 
 }
 
-void discretize_circuits() {
+void discretize_pipes() {
   for (auto& circuit : model::circuits) {
 	for (auto& pipe : circuit->pipes) {
       pipe->circuit = circuit;
@@ -108,6 +108,7 @@ void discretize_circuits() {
         } else {
           pipe->faces.push_back(std::make_shared<PFace>(i, pipe, nodes[i-1], -1, nodes[i], -1, pipe->diameter, cfarea, delx, delz, fricopt, roughness));
         }
+        circuit->faces.push_back(pipe->faces.back());
       }
 
     /*   for (int i = 0; i < ncell-1; ++i) {

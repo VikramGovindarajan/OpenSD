@@ -26,6 +26,17 @@ Node::Node(pugi::xml_node flnode_node)
     ttemp_old  = stod(get_node_value(flnode_node, "ttemp_old"));
     tenth_old  = stod(get_node_value(flnode_node, "tenth_old"));
     msource    = stod(get_node_value(flnode_node, "msource"));
+
+    pugi::xml_attribute fixed_var_attr = flnode_node.attribute("fixed_var");
+    if (fixed_var_attr) {
+      std::string fixed_var_str = fixed_var_attr.value();
+      std::istringstream ss(fixed_var_str);
+      std::string item;
+      while (std::getline(ss, item, ',')) {
+        fixed_var.insert(item);
+      }
+    }
+
   } else {
     fatal_error("Must specify identifier of flow node in geometry XML file.");
   }

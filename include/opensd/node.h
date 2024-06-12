@@ -52,7 +52,7 @@ public:
   double heat_input;
   double elevation;
   
-  vector<std::string> fixed_var;
+  std::set<std::string> fixed_var;
   double esource;
   double hresidue;
   double volume;

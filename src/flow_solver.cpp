@@ -165,32 +165,73 @@ void exec_massmom(double time, double delt, bool trans_sim, double alpha_mom, in
         }
       }
 
-      // if (node.fixed_var.count("P") > 0 && dynamic_cast<cont::Reservoir*>(&node) == nullptr) {
-        // node.msource = -b(i);
-      // }
+      // if (node.fixed_var.count("P") && !dynamic_cast<cont.Reservoir*>(node)) {
+      if (node->fixed_var.count("P")) {
+        node->msource = -b[i];
+      }
+
       if (A(i, i) < -1.E-6) { // Pending check if 0
         // if ((show_warn && trans_sim) || !trans_sim) {
           std::cout << "Warning: negative A coef. " << node->identifier << " " << A(i, i) << std::endl;
         // }
       }
     }
-    std::cout << "flag1";
-    std::exit(0);
 
-/*     for (int i = 0; i < n; ++i) {
-      auto& node = circuit.nodes[i];
-      if (node.fixed_var.count("msource") > 0) {
-        b(i) += node.msource;
+    for (int i = 0; i < n; ++i) {
+      auto& node = circuit->nodes[i];
+      if (node->fixed_var.count("msource")) {
+        b(i) += node->msource;
       }
     }
 
-    // Deleting boundary condition rows and columns
-    for (auto ind : circuit.Pbound_ind) {
-      A.row(ind).setZero();
-      A.col(ind).setZero();
-      b(ind) = 0.0;
+
+
+
+
+    std::cout << b << std::endl;
+
+    
+     // Assuming A is a Eigen::MatrixXd and b is a Eigen::VectorXd
+    // circuit.Pbound_ind is a vector of indexes to be removed
+    
+    // Remove rows from A
+    for (int index : circuit->Pbound_ind) {
+      A.row(index).swap(A.row(A.rows() - 1)); // Swap with the last row
+      A.conservativeResize(A.rows() - 1, Eigen::NoChange); // Remove last row
     }
 
+    // Remove columns from A
+    for (int index : circuit->Pbound_ind) {
+      A.col(index).swap(A.col(A.cols() - 1)); // Swap with the last column
+      A.conservativeResize(Eigen::NoChange, A.cols() - 1); // Remove last column
+    }
+    
+    // Remove elements from b
+    for (int index : circuit->Pbound_ind) {
+      b.segment(index, b.size() - 1) = b.segment(index + 1, b.size() - index - 1); // Shift elements
+      // b.conservativeResize(b.size() - 1); // Resize to remove last element
+    }
+
+
+
+
+
+
+
+// Print Pbound_ind for debugging
+std::cout << "Pbound_ind: ";
+for (int index : circuit->Pbound_ind) {
+  std::cout << index << " ";
+}
+std::cout << std::endl;
+
+
+
+    std::cout << b << std::endl;
+    std::cout << "flag1";
+    std::exit(0);
+
+/*
     Eigen::VectorXd pc;
     if (A.fullPivLu().isInvertible()) {
       pc = A.lu().solve(b);

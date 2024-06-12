@@ -40,6 +40,8 @@ public:
   vector<std::shared_ptr<Pipe>> pipes;
   vector<BC> bcs;
   vector<std::shared_ptr<Face>> faces;
+  vector<int> Pbound_ind;
+
 protected:
 
 };

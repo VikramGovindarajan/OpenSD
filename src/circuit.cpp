@@ -52,6 +52,18 @@ Circuit::Circuit(pugi::xml_node cir_node)
   for (pugi::xml_node bc : cir_node.children("bc")) {
     this->bcs.push_back(BC(bc));
   }
+
+
+  std::string pbound_ind_str = cir_node.attribute("Pbound_ind").value();
+  if (!pbound_ind_str.empty()) {
+    std::istringstream iss(pbound_ind_str);
+    std::string index_str;
+    while (std::getline(iss, index_str, ',')) {
+      int node_index = std::stoi(index_str);
+      this->Pbound_ind.push_back(node_index);
+    }
+  }
+
   
   this->eps_m = this->mean_flow = this->eps_h = this->eps_p = 0;
 

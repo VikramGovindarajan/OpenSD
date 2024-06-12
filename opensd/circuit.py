@@ -303,6 +303,8 @@ class Circuit:
         if self._flag_tp:
             element.set("flag_tp", "true")
         
+        element.set("Pbound_ind", ",".join(map(str, self.Pbound_ind)))
+        
         if self._flname is not None:
             subelement = ET.SubElement(element, "flname")
             subelement.text = self._flname

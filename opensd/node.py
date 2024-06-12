@@ -51,6 +51,7 @@ class Node(object):
         subelement.set("ttemp_old", str(self.ttemp_old))
         subelement.set("tenth_old", str(self.tenth_old))
         subelement.set("msource",   str(self.msource))
+        subelement.set("fixed_var", ','.join(self.fixed_var))
 
 class Reservoir(Node):
     def __init__(self,identifier,circuit,volume,heat_input,elevation,tpres_old,ttemp_old,tenth_old,geom):

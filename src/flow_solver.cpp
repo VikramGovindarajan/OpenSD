@@ -183,16 +183,6 @@ void exec_massmom(double time, double delt, bool trans_sim, double alpha_mom, in
         b(i) += node->msource;
       }
     }
-
-
-
-
-
-    std::cout << b << std::endl;
-
-    
-     // Assuming A is a Eigen::MatrixXd and b is a Eigen::VectorXd
-    // circuit.Pbound_ind is a vector of indexes to be removed
     
     // Remove rows from A
     for (int index : circuit->Pbound_ind) {
@@ -206,38 +196,35 @@ void exec_massmom(double time, double delt, bool trans_sim, double alpha_mom, in
       A.conservativeResize(Eigen::NoChange, A.cols() - 1); // Remove last column
     }
     
-    // Remove elements from b
-    for (int index : circuit->Pbound_ind) {
-      b.segment(index, b.size() - 1) = b.segment(index + 1, b.size() - index - 1); // Shift elements
-      // b.conservativeResize(b.size() - 1); // Resize to remove last element
+    // Create a new vector excluding elements at the indices in Pbound_ind
+    Eigen::VectorXd b_new(b.size() - circuit->Pbound_ind.size());
+    int b_new_index = 0;
+    int Pbound_index = 0;
+    
+    for (int i = 0; i < b.size(); ++i) {
+      if (Pbound_index < circuit->Pbound_ind.size() && i == circuit->Pbound_ind[Pbound_index]) {
+        ++Pbound_index; // Skip the current index
+      } else {
+        b_new[b_new_index++] = b[i]; // Copy the element
+      }
     }
+    
+    // Assign the new vector back to b
+    b = b_new;
 
-
-
-
-
-
-
-// Print Pbound_ind for debugging
-std::cout << "Pbound_ind: ";
-for (int index : circuit->Pbound_ind) {
-  std::cout << index << " ";
-}
-std::cout << std::endl;
-
-
-
-    std::cout << b << std::endl;
-    std::cout << "flag1";
-    std::exit(0);
-
-/*
     Eigen::VectorXd pc;
     if (A.fullPivLu().isInvertible()) {
       pc = A.lu().solve(b);
     } else {
       pc = Eigen::VectorXd::Zero(b.size()); // Skipping pressure correction for infinite conditional number (to be verified)
     }
+
+
+    std::cout << pc << std::endl;
+    std::exit(0);
+
+
+/*
     
     // Insert zeros at boundary indices
     for (auto ind : circuit.Pbound_ind) {

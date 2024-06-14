@@ -55,6 +55,31 @@ private:
   std::shared_ptr<Face> face;
 };
 
+
+// Function to insert zeros at specified indices in an Eigen::VectorXd
+Eigen::VectorXd insertZerosAtIndices(const Eigen::VectorXd& vec, const std::vector<int>& indices) {
+  // Create a new vector with the required size
+  Eigen::VectorXd new_vec(vec.size() + indices.size());
+
+  // Iterate over the original vector and the indices
+  int orig_index = 0; // Index for original vector vec
+  int new_index = 0;  // Index for new vector new_vec
+  int indices_index = 0; // Index for indices
+
+  for (int i = 0; i < new_vec.size(); ++i) {
+    if (indices_index < indices.size() && new_index == indices[indices_index] - indices_index) {
+      // Insert 0.0 at the specified index
+      new_vec[new_index++] = 0.0;
+      indices_index++;
+    } else {
+      // Copy from the original vector
+      new_vec[new_index++] = vec[orig_index++];
+    }
+  }
+
+  return new_vec;
+}
+
 //==============================================================================
 // Non-member functions
 //==============================================================================
@@ -218,18 +243,13 @@ void exec_massmom(double time, double delt, bool trans_sim, double alpha_mom, in
     } else {
       pc = Eigen::VectorXd::Zero(b.size()); // Skipping pressure correction for infinite conditional number (to be verified)
     }
-
+    
+    // Insert zeros at boundary indices
+    pc = insertZerosAtIndices(pc, circuit->Pbound_ind);
 
     std::cout << pc << std::endl;
     std::exit(0);
-
-
 /*
-    
-    // Insert zeros at boundary indices
-    for (auto ind : circuit.Pbound_ind) {
-      pc(ind) = 0.0;
-    }
 
     // Flow rate corrections
     for (auto& face : circuit.faces) {

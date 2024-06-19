@@ -70,6 +70,8 @@ public:
   void assign_statevar();
   virtual void update_gues();
   void assign_prop();
+  
+  virtual void update_velocity() {}
 
   virtual double eqn_mom(double x, double time, double delt, bool trans_sim, double alpha_mom) {return 0;}
   virtual void update_abcoef(double time, double delt, double trans_sim, double alpha_mom) {}
@@ -103,6 +105,7 @@ public:
 
   // void update_old() override;
   void update_gues() override;
+  void update_velocity() override;
   
 };
 

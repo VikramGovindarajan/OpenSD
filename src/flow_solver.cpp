@@ -247,18 +247,18 @@ void exec_massmom(double time, double delt, bool trans_sim, double alpha_mom, in
     // Insert zeros at boundary indices
     pc = insertZerosAtIndices(pc, circuit->Pbound_ind);
 
-    std::cout << pc << std::endl;
-    std::exit(0);
-/*
-
     // Flow rate corrections
-    for (auto& face : circuit.faces) {
+    for (auto& face : circuit->faces) {
       if (!face->choked) {
         double vc = face->aminus * pc(face->unode->node_ind) - face->aplus * pc(face->dnode->node_ind);
         face->vflow_gues += vc;
+        std::cout << vc << std::endl;
       }
       face->update_velocity();
     }
+
+    std::exit(0);
+/*
 
     // Pressure and density corrections
     for (int i = 0; i < n; ++i) {

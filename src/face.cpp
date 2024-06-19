@@ -221,4 +221,8 @@ void PFace::update_gues() {
   fricfact_gues = fricfact_old;
 }
 
+void PFace::update_velocity() {
+  velocity = vflow_gues / cfarea;
+}
+
 } // namespace opensd

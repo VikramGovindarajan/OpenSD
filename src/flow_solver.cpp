@@ -252,55 +252,55 @@ void exec_massmom(double time, double delt, bool trans_sim, double alpha_mom, in
       if (!face->choked) {
         double vc = face->aminus * pc(face->unode->node_ind) - face->aplus * pc(face->dnode->node_ind);
         face->vflow_gues += vc;
-        std::cout << vc << std::endl;
       }
       face->update_velocity();
     }
 
-    std::exit(0);
-/*
 
     // Pressure and density corrections
     for (int i = 0; i < n; ++i) {
-      auto& node = circuit.nodes[i];
-      if (node.flowreg == "Slug") continue;
+      auto& node = circuit->nodes[i];
+      // if (node.flowreg == "Slug") continue;
       double relax = 0.6;
-      if (solver::relax_pres) {
-        relax = solver::relax_pres;
-      }
-      node.tpres_gues += relax * pc(i);
-      if (node.tpres_gues < 0.0) {
-        std::cerr << "Negative tpres " << node.identifier << " " << node.tpres_gues << " " << node.tpres_old << std::endl;
+      // if (solver::relax_pres) {
+        // relax = solver::relax_pres;
+      // }
+      node->tpres_gues += relax * pc(i);
+      if (node->tpres_gues < 0.0) {
+        std::cerr << "Negative tpres " << node->identifier << " " << node->tpres_gues << " " << node->tpres_old << std::endl;
         std::cerr << pc << std::endl;
         std::exit(EXIT_FAILURE);
       }
 
-      node.update_staticvar();
+      node->update_staticvar();
 
-      if (main_iter == 0) node.pc_flag = false;
-      node.ther_gues.update(CoolProp::HmassP_INPUTS, node.senth_gues, node.spres_gues);
-      if (circuit.flag_tp || dynamic_cast<cont::TPTank*>(&node) != nullptr) {
-        node.ther_gues.update_sat();
-      }
-      if (trans_sim && (node.pc_flag || node.ther_gues.phase() != node.ther_old.phase())) {
-        node.pc_flag = true;
-      }
+      // if (main_iter == 0) node->pc_flag = false;
+      node->ther_gues->update(CoolProp::HmassP_INPUTS, node->senth_gues, node->spres_gues);
+      // if (circuit.flag_tp || dynamic_cast<cont::TPTank*>(&node) != nullptr) {
+        // node.ther_gues.update_sat();
+      // }
+      // if (trans_sim && (node.pc_flag || node.ther_gues.phase() != node.ther_old.phase())) {
+        // node.pc_flag = true;
+      // }
     }
 
-    for (auto& face : circuit.faces) {
-      if (!face->choked) {
+
+    for (auto& face : circuit->faces) {
+      // if (!face->choked) {
         face->update_statevar();
-        face->ther_gues.update();
-        if (circuit.flag_tp) face->ther_gues.update_sat();
-        face->update_heat_input(time, delt);
-        face->update_fricfact();
-      } else {
-        face->update_Gcr();
-        face->G = std::copysign(face->Gcr, face->vflow_gues);
-        face->vflow_gues = face->G * face->cfarea / face->ther_gues.rhomass();
-      }
+        face->ther_gues->update();
+        // if (circuit.flag_tp) face->ther_gues->update_sat();
+        // face->update_heat_input(time, delt);
+        // face->update_fricfact();
+        // std::cout << face->spres_gues << std::endl;
+      // } else {
+        // face->update_Gcr();
+        // face->G = std::copysign(face->Gcr, face->vflow_gues);
+        // face->vflow_gues = face->G * face->cfarea / face->ther_gues.rhomass();
+      // }
     }
- */
+
+  // std::exit(0);
 
   }
 }

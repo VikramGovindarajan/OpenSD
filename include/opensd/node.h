@@ -72,6 +72,7 @@ public:
   double eqn_cont(double alpha_mom);
   void update_gues();
   void assign_staticvar();
+  void update_staticvar();
   void assign_prop();
 };
 

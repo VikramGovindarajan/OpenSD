@@ -124,4 +124,44 @@ void Node::assign_prop() {
   ther_old->update(CoolProp::HmassP_INPUTS,senth_old,spres_old);
 }
 
+void Node::update_staticvar() {
+  // if (pressure < 0) {
+    double pressure = tpres_gues;
+  // }
+
+  if (std::find(fixed_var.begin(), fixed_var.end(), "P") != fixed_var.end()) {
+    velocity = 0.0;
+  } else {
+    double sum_velocity = 0.0;
+    int count = 0;
+    for (const auto& face : ifaces) {
+      sum_velocity += face->velocity;
+      count++;
+    }
+    for (const auto& face : ofaces) {
+      sum_velocity += face->velocity;
+      count++;
+    }
+    if (count > 0) {
+      velocity = sum_velocity / count;
+    } else {
+      velocity = 0.0;
+    }
+  }
+
+  spres_gues = pressure - 0.5 * ther_gues->rhomass() * velocity * velocity;
+  stemp_gues = ttemp_gues - 0.5 * velocity * velocity / ther_gues->cpmass();
+  senth_gues = tenth_gues - 0.5 * velocity * velocity;
+
+  if (spres_gues < 0.0) {
+    std::cerr << "Warning: negative spres in flow_components in update_staticvar. Zero velocity assumed: "
+              << identifier << " " << tpres_gues << " " << velocity << " "
+              << ther_gues->rhomass() << " " << 0.5 * ther_gues->rhomass() * velocity * velocity << std::endl;
+    spres_gues = pressure;
+    stemp_gues = ttemp_gues;
+    senth_gues = tenth_gues;
+  }
+}
+
+
 } // namespace opensd

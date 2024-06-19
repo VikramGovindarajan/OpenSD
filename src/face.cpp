@@ -31,6 +31,13 @@ Face::Face(int faceno, std::shared_ptr<Node> unode, double ufrac, std::shared_pt
   // }
 }
 
+void Face::update_statevar(){
+  tpres_gues = 0.5 * (unode->tpres_gues + dnode->tpres_gues);
+  spres_gues = 0.5 * (unode->spres_gues + dnode->spres_gues);
+  ttemp_gues = 0.5 * (unode->ttemp_gues + dnode->ttemp_gues);
+  stemp_gues = 0.5 * (unode->stemp_gues + dnode->stemp_gues);
+}
+
 void Face::assign_statevar() {
   tpres_old = 0.5 * (unode->tpres_old + dnode->tpres_old);
   spres_old = 0.5 * (unode->spres_old + dnode->spres_old);

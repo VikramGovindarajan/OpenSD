@@ -53,6 +53,7 @@ int opensd_run()
         if (converged) {
           if (settings::verbosity >= 3 || (settings::verbosity >= 2 && !trans_sim)) {
             std::cout << "massmom converged in " << flow_iter + 1 << " iter. " << eps_m << " " << eps_p << std::endl;
+            std::exit(0);
           }
           break;
         } else {

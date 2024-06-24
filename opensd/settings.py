@@ -58,7 +58,7 @@ class Settings:
 
         self._show_warn = False
 
-        self._alpha_mom = 0.6
+        self._alpha_mom = 1.0
         self._alpha_heat = np.array(0.6)
         self._alpha_ener = np.array(0.6)
 

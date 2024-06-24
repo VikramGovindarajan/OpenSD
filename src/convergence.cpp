@@ -62,6 +62,15 @@ std::tuple<bool, std::tuple<double, double>> check_conv(double time, double delt
   std::tuple<double, double> ret_args = std::make_tuple(eps_mtot, eps_ptot);
 
   if (condition) {
+    
+    
+    for (auto& circuit : model::circuits) {
+    for (auto& node : circuit->nodes) {
+      std::cout << node->identifier << " " << node->tpres_gues << std::endl;
+    }
+    }
+
+    
     return std::make_tuple(true, ret_args);
   } else {
     return std::make_tuple(false, ret_args);

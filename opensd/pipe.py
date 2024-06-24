@@ -35,6 +35,7 @@ class Pipe(object):
         cfarea = cfarea * npar
             
         self.heat_input = heat_input
+        self.roughness = roughness
 
         self.nodes = []
         for i in range(ncell-1):
@@ -77,6 +78,7 @@ class Pipe(object):
         subelement.set("length",     str(self.length))
         subelement.set("unode",      str(self.unode.identifier))
         subelement.set("dnode",      str(self.dnode.identifier))
+        subelement.set("roughness",  str(self.roughness))
 
 
 class Face(object): #partial class

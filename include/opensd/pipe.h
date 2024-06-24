@@ -43,6 +43,7 @@ public:
   double heat_input;
   double mflow;
   double cfarea1;
+  double roughness;
 
   
   Pipe(std::string identifier, std::shared_ptr<Circuit> circuit, double diameter, double length, std::shared_ptr<Node> unode, double ufrac, std::shared_ptr<Node> dnode, double dfrac, double ficopt, double roughness, int ncell, double heat_input, double cfarea, int npar, double qcrit, double Kforward, int flowreg);

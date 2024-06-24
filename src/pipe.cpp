@@ -37,7 +37,7 @@ Pipe::Pipe(pugi::xml_node pipe_node)
   double cfarea;
   double delx;
   double delz;
-  double roughness;
+  this->roughness = stod(get_node_value(pipe_node, "roughness"));
   double fricopt;
 
 }

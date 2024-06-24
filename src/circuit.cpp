@@ -107,18 +107,17 @@ void discretize_pipes() {
       double cfarea = PI*std::pow(pipe->diameter,2)/4.;
       double delx = pipe->length/pipe->ncell;
       double delz = 0.;
-      double roughness;
       double fricopt;
 
       for (int i = 0; i < pipe->ncell; ++i) {
         if (i == 0 && pipe->ncell == 1) {
-          pipe->faces.push_back(std::make_shared<PFace>(i, pipe, pipe->unode, ufrac, pipe->dnode, dfrac, pipe->diameter, cfarea, delx, delz, fricopt, roughness));
+          pipe->faces.push_back(std::make_shared<PFace>(i, pipe, pipe->unode, ufrac, pipe->dnode, dfrac, pipe->diameter, cfarea, delx, delz, fricopt, pipe->roughness));
         } else if (i == 0) {
-          pipe->faces.push_back(std::make_shared<PFace>(i, pipe, pipe->unode, ufrac, nodes[0], -1, pipe->diameter, cfarea, delx, delz, fricopt, roughness));
+          pipe->faces.push_back(std::make_shared<PFace>(i, pipe, pipe->unode, ufrac, nodes[0], -1, pipe->diameter, cfarea, delx, delz, fricopt, pipe->roughness));
         } else if (i == pipe->ncell-1) {
-          pipe->faces.push_back(std::make_shared<PFace>(i, pipe, nodes[pipe->ncell-2], -1, pipe->dnode, dfrac, pipe->diameter, cfarea, delx, delz, fricopt, roughness));
+          pipe->faces.push_back(std::make_shared<PFace>(i, pipe, nodes[pipe->ncell-2], -1, pipe->dnode, dfrac, pipe->diameter, cfarea, delx, delz, fricopt, pipe->roughness));
         } else {
-          pipe->faces.push_back(std::make_shared<PFace>(i, pipe, nodes[i-1], -1, nodes[i], -1, pipe->diameter, cfarea, delx, delz, fricopt, roughness));
+          pipe->faces.push_back(std::make_shared<PFace>(i, pipe, nodes[i-1], -1, nodes[i], -1, pipe->diameter, cfarea, delx, delz, fricopt, pipe->roughness));
         }
         circuit->faces.push_back(pipe->faces.back());
       }

@@ -119,7 +119,7 @@ PFace::PFace(int faceno, std::shared_ptr<Pipe> pipe, std::shared_ptr<Node> unode
 
 double PFace::eqn_mom(double x, double time, double delt, bool trans_sim, double alpha_mom) {
   Re = 1000.*std::abs(x)*diameter/(cfarea*0.001);
-  fricfact_gues = std::min(0.316/std::pow(Re,0.25),64.);
+  fricfact_gues = std::min(10.78 * std::pow(M_PI, 2) * 9.81 / 8.0 * std::pow(diameter, 0.13) / (std::pow(roughness, 1.852) * std::pow(std::abs(x), 0.148)),64.);
   double delp_fr = fricfact_gues * delx * ther_gues->rhomass() * x * std::abs(x) / (2. * diameter * cfarea * cfarea);
 /*  if (faceno == 0) {
     delp_fr += pipe.Kforward * ther_gues.rhomass() * x * std::abs(x) / (2. * cfarea * cfarea);

@@ -292,15 +292,12 @@ void exec_massmom(double time, double delt, bool trans_sim, double alpha_mom, in
         // if (circuit.flag_tp) face->ther_gues->update_sat();
         // face->update_heat_input(time, delt);
         // face->update_fricfact();
-        // std::cout << face->spres_gues << std::endl;
       // } else {
         // face->update_Gcr();
         // face->G = std::copysign(face->Gcr, face->vflow_gues);
         // face->vflow_gues = face->G * face->cfarea / face->ther_gues.rhomass();
       // }
     }
-
-  // std::exit(0);
 
   }
 }

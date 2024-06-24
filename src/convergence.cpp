@@ -28,6 +28,7 @@ std::tuple<bool, std::tuple<double, double>> check_conv(double time, double delt
     std::vector<double> e_mass;
     for (auto& face : circuit->faces) {
       face->presidue = face->eqn_mom(face->vflow_gues, time, delt, trans_sim, alpha_mom);
+      std::cout << face->presidue << std::endl;
       // circuit->eps_p += std::abs(face.presidue) / face.tpres_gues;
       // face.mflow = face.vflow_gues * face.ther_gues.rhomass();
       // if (std::abs(face.mflow) > 1.0E-5) {
@@ -38,6 +39,7 @@ std::tuple<bool, std::tuple<double, double>> check_conv(double time, double delt
     for (auto& pipe : circuit->pipes) {
       // pipe.update_mflow();
     }
+    std::exit(0);
 
     
     

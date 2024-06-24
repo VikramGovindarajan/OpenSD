@@ -69,13 +69,13 @@ double Node::eqn_cont(double alpha_mom) {
   double isum_gues = 0.;
   double isum_old = 0.;
   for (const auto& iface : ifaces) {
-    isum_gues += 1000.* iface->vflow_gues; //iface.ther_gues.rhomass()
-    // isum_old += 1000. * iface->vflow_old; //iface.ther_old.rhomass()
+    isum_gues += iface->ther_gues->rhomass()* iface->vflow_gues;
+    // isum_old += iface->ther_old->rhomass() * iface->vflow_old;
   }
   double osum_gues = 0.;
   double osum_old = 0.;
   for (const auto& oface : ofaces) {
-    osum_gues += 1000. * oface->vflow_gues; //oface.ther_gues.rhomass()
+    osum_gues += oface->ther_gues->rhomass() * oface->vflow_gues;
     // osum_old += oface.ther_old.rhomass() * oface.vflow_old;
   }
 

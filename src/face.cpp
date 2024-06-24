@@ -118,14 +118,14 @@ PFace::PFace(int faceno, std::shared_ptr<Pipe> pipe, std::shared_ptr<Node> unode
 }
 
 double PFace::eqn_mom(double x, double time, double delt, bool trans_sim, double alpha_mom) {
-  Re = 1000.*x*diameter/(cfarea*0.001);
+  Re = 1000.*std::abs(x)*diameter/(cfarea*0.001);
   fricfact_gues = std::min(0.316/std::pow(Re,0.25),64.);
-  double delp_fr = fricfact_gues * delx * 1000. * x * std::abs(x) / (2. * diameter * cfarea * cfarea); //ther_gues.rhomass()
+  double delp_fr = fricfact_gues * delx * ther_gues->rhomass() * x * std::abs(x) / (2. * diameter * cfarea * cfarea);
 /*  if (faceno == 0) {
     delp_fr += pipe.Kforward * ther_gues.rhomass() * x * std::abs(x) / (2. * cfarea * cfarea);
   }
 */
-  double delp_gr = 1000. * grav * delz; //ther_gues.rhomass()
+  double delp_gr = ther_gues->rhomass() * grav * delz; 
   // double term_old = ((1. - alpha_mom) * ((downstream.tpres_old - upstream.tpres_old) 
                     // - vflow_old * vflow_old / (2. * cfarea * cfarea) * (downstream.rhomass_old - upstream.rhomass_old) 
                     // + ther_old.rhomass() * const.grav * delz
@@ -137,7 +137,7 @@ double PFace::eqn_mom(double x, double time, double delt, bool trans_sim, double
   }
 */
 
-  double y = (trans_sim * delx * 1000. * (x - vflow_old) / (delt * cfarea)  //ther_gues.rhomass()
+  double y = (trans_sim * delx * ther_gues->rhomass() * (x - vflow_old) / (delt * cfarea)
             + alpha_mom * (dnode->tpres_gues - unode->tpres_gues //downstream.tpres_gues - upstream.tpres_gues 
                           - vflow_gues * vflow_gues / (2. * cfarea * cfarea) * 0. //(downstream.rhomass_gues - upstream.rhomass_gues) 
                           + delp_gr 

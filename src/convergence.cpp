@@ -11,7 +11,7 @@
 namespace opensd {
     
 std::tuple<bool, std::tuple<double, double>> check_conv(double time, double delt, bool trans_sim, double alpha_mom, std::string opt) {
-  double eps_mtot = 1.0, eps_ptot = 1.0, eps_htot = 0.0, eps_ttot = 0.0;
+  double eps_mtot = 0.0, eps_ptot = 0.0, eps_htot = 0.0, eps_ttot = 0.0;
 
   for (auto& circuit : model::circuits) {
     
@@ -28,18 +28,26 @@ std::tuple<bool, std::tuple<double, double>> check_conv(double time, double delt
     std::vector<double> e_mass;
     for (auto& face : circuit->faces) {
       face->presidue = face->eqn_mom(face->vflow_gues, time, delt, trans_sim, alpha_mom);
-      std::cout << face->presidue << std::endl;
-      // circuit->eps_p += std::abs(face.presidue) / face.tpres_gues;
-      // face.mflow = face.vflow_gues * face.ther_gues.rhomass();
-      // if (std::abs(face.mflow) > 1.0E-5) {
-        // e_mass.push_back(std::abs(face.mflow));
-      // }
-      // face.mflow = face.vflow_gues * face.ther_gues.rhomass();
+      circuit->eps_p += std::abs(face->presidue) / face->tpres_gues;
+      face->mflow = face->vflow_gues * face->ther_gues->rhomass();
+      if (std::abs(face->mflow) > 1.0E-5) {
+        e_mass.push_back(std::abs(face->mflow));
+      }
+      face->mflow = face->vflow_gues * face->ther_gues->rhomass();
     }
     for (auto& pipe : circuit->pipes) {
       // pipe.update_mflow();
     }
-    std::exit(0);
+
+
+    if (e_mass.empty()) {
+      circuit->eps_m = 0.0;
+    } else {
+      circuit->mean_flow = std::accumulate(e_mass.begin(), e_mass.end(), 0.0) / e_mass.size();
+      if (!eps_mlist.empty()) {
+        circuit->eps_m = *std::max_element(eps_mlist.begin(), eps_mlist.end()) / circuit->mean_flow;
+      }
+    }
 
     
     

@@ -10,6 +10,7 @@
 #include "opensd/settings.h"
 #include "opensd/convergence.h"
 #include "opensd/flow_solver.h"
+#include "opensd/post.h"
 
 //==============================================================================
 // C API functions
@@ -53,7 +54,6 @@ int opensd_run()
         if (converged) {
           if (settings::verbosity >= 3 || (settings::verbosity >= 2 && !trans_sim)) {
             std::cout << "massmom converged in " << flow_iter + 1 << " iter. " << eps_m << " " << eps_p << std::endl;
-            std::exit(0);
           }
           break;
         } else {
@@ -62,6 +62,8 @@ int opensd_run()
           }
         }
       }
+      
+      break;
       
       if (!converged) {
         std::cerr << "massmom not converged. stopping " << eps_m << " " << eps_p << std::endl;
@@ -117,7 +119,8 @@ int opensd_run()
     // post.update_calcs(time, delt);
 
     // if (flag_write) {
-      // post.write_output(time, delt);
+      openFile("outputfile");
+      writeOutput(simulation::current_time, simulation::delt);
     // }
   }
   
